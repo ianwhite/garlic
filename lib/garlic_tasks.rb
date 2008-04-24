@@ -7,6 +7,9 @@ def garlic(&block)
 end
 
 namespace :garlic do
+  desc "Install repos, prepare targets, and run CI in them"
+  task :cruise => [:install_repos, :prepare, :run]
+  
   desc "Prepare each of the rails targets"
   task :prepare => :check_repos do
     cd('garlic') { garlic.prepare }
