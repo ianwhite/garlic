@@ -8,8 +8,10 @@ It works by cloning git repos for all your dependencies (so they all must be
 on git), and then using git to checkout various tags and branches to build
 your app against.
 
-See it in action by downloading git://github.com/ianwhite/inherit_views and
-running rake cruise in the top-level directory.
+EXPERIMENTAL - currently under development
 
-This will clone all the required git repos (done only once), set up the target
-railses (done once), then run the targets.
+# See it in action by downloading git://github.com/ianwhite/inherit_views and
+# running rake run_targets in the top-level directory.
+
+# This will clone all the required git repos (done only once), set up the target
+# railses (done once), then run the targets.
