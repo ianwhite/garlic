@@ -144,7 +144,7 @@ private
         rm "#{repo}.tar"
       end
       
-      cd(options[:exec_path] || '') do
+      cd(options[:exec_path] || '.') do
         yield if block_given?
       end
     
@@ -171,8 +171,9 @@ private
   end
 
   def run_in_target(target, &block)
-    @runners[target] ||= TargetRunner.new(self, target)
-    @runners[target].instance_eval(&block)
+    cd "work/#{target}" do
+      TargetRunner.new(self, target).instance_eval(&block)
+    end
   end
   
   def checkout_dependency(repo, tree_ish)
@@ -198,6 +199,7 @@ private
   end
   
   def commit_sha_of(path)
+    puts `pwd`
     cd path do
       return `git log HEAD -1 --pretty=format:\"%H\"`
     end
@@ -228,9 +230,7 @@ eod
     end
     
     def method_missing(method, *args, &block)
-      cd "work/#{target}" do
-        garlic.send(method, *args, &block)
-      end
+      garlic.send(method, *args, &block)
     end
 
     def respond_to?(method)
@@ -238,8 +238,8 @@ eod
     end
     
     def plugin(plugin, options = {}, &block)
-      if tree_ish = extract_tree_ish_from!(options)
-        checkout_dependency(plugin, tree_ish)
+      if tree_ish = garlic.extract_tree_ish_from!(options)
+        garlic.send(:checkout_dependency, plugin, tree_ish)
       end
       garlic.send(:install_dependency, plugin, "work/#{target}/vendor/plugins/#{plugin}", :exec_path => "work/#{target}", &block)
     end
