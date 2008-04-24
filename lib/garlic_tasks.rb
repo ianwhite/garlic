@@ -9,26 +9,31 @@ end
 namespace :garlic do
   desc "Prepare each of the rails targets"
   task :prepare => :check_repos do
-    garlic.prepare
+    cd('garlic') { garlic.prepare }
   end
 
   desc "Run the CI task in all targets"
   task :run do
-    garlic.run
+    cd('garlic') { garlic.run }
   end
 
   desc "Install required repositories"
   task :install_repos do
-    garlic.install_repos
+    cd('garlic') { garlic.install_repos }
   end
 
   desc "Update installed repositories"
   task :update_repos do
-    garlic.update_repos
+    cd('garlic') { garlic.update_repos }
   end
 
   desc "Check that repositories are installed"
   task :check_repos do
-    garlic.check_repos
+    cd('garlic') { garlic.check_repos }
+  end
+  
+  desc "Reset all repos back to master"
+  task :reset_repos do
+    cd('garlic') { garlic.reset_repos }
   end
 end

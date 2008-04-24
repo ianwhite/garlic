@@ -3,14 +3,15 @@ class Garlic
   attr_accessor :repos, :targets, :all_targets
   
   def initialize(actor)
-    self.actor = actor
+    @runners = {}
+    @actor = actor
     self.repos = {}
     self.targets = {}
     self.all_targets = {}
   end
   
   def method_missing(method, *args, &block)
-    actor.send(method, *args, &block)
+    return actor.send(method, *args, &block)
   end
   
   def respond_to?(method)
@@ -23,11 +24,11 @@ class Garlic
   
   def install_repos
     repos.each do |repo, options|
-      if File.exists?("repositories/#{repo}")
+      if File.exists?("repos/#{repo}")
         puts "\nSkipping #{repo}, as it exists"
       else
         puts "\nInstalling #{repo}..."
-        sh "git clone #{options[:url]} repositories/#{repo}"
+        sh "git clone #{options[:url]} repos/#{repo}"
       end
     end
     puts "\nInstalled: #{repos.keys.join(", ")}"
@@ -35,22 +36,42 @@ class Garlic
   
   def update_repos
     repos.each do |repo, options|
-      if repo_path?("repositories/#{repo}")
+      if repo_path?("repos/#{repo}")
         puts "\nUpdating #{repo}..."
-        cd "repositories/#{repo}" do
+        cd "repos/#{repo}" do
           sh "git pull", :verbose => false
         end
-      elsif File.exists?("repositories/#{repo}")
-        raise "\nRepo #{repo} (repositories/#{repo}) is not a git repo.\nRemove it and run rake install_repositories\n\n"
+      elsif File.exists?("repos/#{repo}")
+        raise "\nRepo #{repo} (repos/#{repo}) is not a git repo.\nRemove it and run rake install_repos\n\n"
       else
-        raise "\nRepo #{repo} missing.\nPlease run rake install_repositories\n\n"
+        raise "\nRepo #{repo} missing.\nPlease run rake install_repos\n\n"
       end
     end
   end
   
   def check_repos
-    bad = repos.keys.reject {|repo| repo_path?("repos/#{repo}")}
-    bad.length == 0 or raise "\nMissing/bad repo(s): #{bad.join(', ')}.\nPlease run rake garlic:install_repos.\n\n"
+    errors = []
+    repos.each do |repo, options|
+      if !repo_path?("repos/#{repo}")
+        errors << " - #{repo} is missing, or is not a git repo"
+      elsif !same_git_url?(options[:url], (url = origin_of("repos/#{repo}"))) 
+        errors << " - #{repo}'s url has changed from #{url} to #{options[:url]}"
+      end
+    end
+    errors.length == 0 or raise <<-eod
+
+#{errors.join("\n")}
+
+Please remove these repositories and run rake garlic:install_repos
+eod
+  end
+  
+  def reset_repos
+    repos.keys.each do |repo|
+      cd "repos/#{repo}" do
+        sh "git reset --hard master"
+      end
+    end
   end
   
   def prepare
@@ -73,43 +94,57 @@ class Garlic
     these_targets.each do |target|
       puts "\n#{'-'*78}\nTarget: #{target}\n#{'-'*78}\n"
       options = all_targets.merge(targets[target])
-      begin
+      #begin
         run_in_target(target, &(options[:run] || lambda { sh "rake" }))
         puts "\ntarget: #{target} PASS"
-      rescue
-        puts "\ntarget: #{target} FAIL"
-        failed << target
-      end
+      #rescue
+      #  puts "\ntarget: #{target} FAIL"
+      #  failed << target
+      #end
     end
 
     puts "\n#{'='*78}\n"
     if failed.length > 0
-      raise "The following targets passed: #{(targets - failed).join(', ')}.\n\nThe following targets FAILED: #{failed.join(', ')}.\n\n"
+      raise "The following targets passed: #{(these_targets - failed).join(', ')}.\n\nThe following targets FAILED: #{failed.join(', ')}.\n\n"
     else
-      puts "All targets passed: #{targets.join(', ')}.\n\n"
+      puts "All specified targets passed: #{these_targets.join(', ')}.\n\n"
     end
   end
   
+  def extract_tree_ish_from!(options)
+    [:tree_ish, :tree, :branch, :tag, :commit, :sha].each do |key|
+      if val = options.delete(key)
+        return val
+      end
+    end
+    nil
+  end
+  
 private
-  # presumes that repository's HEAD is in the desired location
-  def install_dependency(repo, dest, &block)
+  # presumes
+  #  - that repository's HEAD is in the desired location
+  #  - that the working directory is garlic main (the one containing repos)
+  def install_dependency(repo, dest, options = {}, &block)
     vendor_sha_file = "#{dest}/.git_sha"
     vendor_sha = File.read(vendor_sha_file) rescue nil
-    head_sha = commit_sha_of("repositories/#{repo}")
+    head_sha = commit_sha_of("repos/#{repo}")
   
     if head_sha == vendor_sha
       puts "#{dest} is up to date"
     else
-      puts "#{dest} needs update, exporting archive from repositories/#{repo}..."
+      puts "#{dest} needs update, exporting archive from repos/#{repo}..."
       rm_rf dest; mkdir_p dest
     
-      cd "repositories/#{repo}" do
+      cd "repos/#{repo}" do
         sh "git archive --format=tar HEAD > ../../#{dest}/#{repo}.tar", :verbose => false
       end
     
-      cd dest do
+      cd(dest) do
         `tar -x -f #{repo}.tar`
         rm "#{repo}.tar"
+      end
+      
+      cd(options[:exec_path] || '') do
         yield if block_given?
       end
     
@@ -127,13 +162,11 @@ private
       puts "rails app in work/#{rails} exists"
     else
       puts "Creating rails app in work/#{rails}..."
-      sh "ruby repositories/rails/railties/bin/rails work/#{rails}", :verbose => false
+      sh "ruby repos/rails/railties/bin/rails work/#{rails}", :verbose => false
     end
 
-    install_dependency('rails', "work/#{rails}/vendor/rails") do
-      cd "../.." do
-        sh "rails rails:update", :verbose => false
-      end
+    install_dependency('rails', "work/#{rails}/vendor/rails", :exec_path => "work/#{rails}") do
+      sh "rake rails:update"
     end
   end
 
@@ -143,7 +176,7 @@ private
   end
   
   def checkout_dependency(repo, tree_ish)
-    cd "repositories/#{repo}" do
+    cd "repos/#{repo}" do
       sh "git checkout -q #{tree_ish}", :verbose => false
     end
   end
@@ -152,16 +185,28 @@ private
     File.directory?(File.join(path, '.git'))
   end
 
+  def origin_of(path)
+    match = `cd #{path}; git remote show -n origin`.match(/URL: (.*)\n/)
+    (match && match[1])
+  end
+
+  def same_git_url?(a, b)
+    # remove / and .git from end
+    a = a.sub(/\/?(\.git)?$/, '')
+    b = b.sub(/\/?(\.git)?$/, '')
+    a == b
+  end
+  
   def commit_sha_of(path)
     cd path do
       return `git log HEAD -1 --pretty=format:\"%H\"`
     end
   end
-  
+   
   def determine_targets
-    targs = ENV['TARGETS'] || ENV['TARGET'] || targets.keys.join(",")
-    targs = [*targs.split(',')] & targets.keys
-    targs.length == 0 and raise <<-eod
+    these_targets = ENV['TARGETS'] || ENV['TARGET'] || targets.keys.join(",")
+    these_targets = [*these_targets.split(',')] & targets.keys
+    these_targets.length == 0 and raise <<-eod
 
 No targets specified.
 Did you mean one or more of: #{targets.keys.join(', ')}?
@@ -171,7 +216,7 @@ e.g. rake run_targets TARGET=#{targets.keys.first}
      rake run_targets
 
 eod
-    targs
+    these_targets
   end
   
   class TargetRunner
@@ -192,8 +237,11 @@ eod
       super(method) || garlic.respond_to?(method)
     end
     
-    def plugin(plugin, &block)
-      garlic.send(:install_dependency, :plugin, "work/#{target}/vendor/plugins/#{plugin}", &block)
+    def plugin(plugin, options = {}, &block)
+      if tree_ish = extract_tree_ish_from!(options)
+        checkout_dependency(plugin, tree_ish)
+      end
+      garlic.send(:install_dependency, plugin, "work/#{target}/vendor/plugins/#{plugin}", :exec_path => "work/#{target}", &block)
     end
 
     def dependency(repo, dest, options = {}, &block)
@@ -210,12 +258,13 @@ eod
     end
     
     def repo(name, options = {}, &block)
-      options[:branch] ||= 'master'
+      options[:url] or raise ArgumentError, "repo requires a :url"
+      options[:url] = File.expand_path(options[:url]) unless options[:url] =~ /^\w+(:|@)/
       garlic.repos[name.to_s] = options
     end
     
     def target(name, options = {}, &block)
-      options[:tree] ||= options.delete(:branch) || options.delete(:tag) || options.delete(:commit) || 'master'
+      options[:tree] = garlic.extract_tree_ish_from!(options) || 'master'
       options[:repo] ||= 'rails'
       BlockParser.new(options, :prepare, :run, &block) if block_given?
       garlic.targets[name.to_s] = options
