@@ -80,7 +80,7 @@ eod
       options = all_targets.merge(options)
       puts "\nInstalling target #{target} (#{options[:tree]})"
       install_rails(target, options[:tree])
-      run_in_target(target, &options[:prepare]) if options[:prepare]
+      run_for_target(target, &options[:prepare]) if options[:prepare]
     end
   ensure
     checkout_dependency('rails', 'master') # we get repo back to master if something goes wrong
@@ -94,13 +94,13 @@ eod
     these_targets.each do |target|
       puts "\n#{'-'*78}\nTarget: #{target}\n#{'-'*78}\n"
       options = all_targets.merge(targets[target])
-      #begin
-        run_in_target(target, &(options[:run] || lambda { sh "rake" }))
+      begin
+        run_for_target(target, :exec_path => "work/#{target}", &(options[:run] || lambda { sh "rake" }))
         puts "\ntarget: #{target} PASS"
-      #rescue
-      #  puts "\ntarget: #{target} FAIL"
-      #  failed << target
-      #end
+      rescue
+        puts "\ntarget: #{target} FAIL"
+        failed << target
+      end
     end
 
     puts "\n#{'='*78}\n"
@@ -170,8 +170,8 @@ private
     end
   end
 
-  def run_in_target(target, &block)
-    cd "work/#{target}" do
+  def run_for_target(target, options = {}, &block)
+    cd(options[:exec_path] || ".") do
       TargetRunner.new(self, target).instance_eval(&block)
     end
   end
@@ -199,7 +199,6 @@ private
   end
   
   def commit_sha_of(path)
-    puts `pwd`
     cd path do
       return `git log HEAD -1 --pretty=format:\"%H\"`
     end
