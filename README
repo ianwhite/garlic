@@ -15,3 +15,46 @@ EXPERIMENTAL - currently under development
 
 # This will clone all the required git repos (done only once), set up the target
 # railses (done once), then run the targets.
+
+# = Example
+#
+# The example is running an rcov task for a plugin on three targets of rails.
+# I'm assuming there's a git repo for the plugin, and the plugin has a task
+# called 'rcov' that runs the rcov task.  This is intended to be run when
+# the plugin is set up within a rails project.
+#
+# 1. Add garlic as a submodule, or braid it
+#
+# 2. In your Rakefile:
+#
+#   require File.join(File.dirname(__FILE__),'garlic/lib/garlic_tasks')
+#
+#   garlic do
+#     # repo, give a url, and optional branch
+#     repo 'rails', :url => 'git://github.com/rails/rails'
+#     repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
+#     repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails', :branch => 'aliased-render-partial'
+#     repo 'inherit_views', :url => '.'
+#     
+#     # for target, default repo is 'rails', default tree is 'master'
+#     target 'edge'
+#     target '2.0-stable', :branch => 'origin/2-0-stable' # same as :tree => 'origin/2-0-stable'
+#     target '2.0.2', :tag => 'v2.0.2' # same as :tree => 'v2.0.2'
+#     
+#     all_targets do
+#       prepare do
+#         plugin 'rspec'
+#         plugin 'inherit_views'
+#         plugin 'rspec-rails' do
+#           sh "script/server rspec -f"
+#         end
+#       end
+#       
+#       run do
+#         cd "vendor/plugins/inherit_views" do
+#           sh "rake cruise"
+#         end
+#       end
+#     end
+#   end
+#
