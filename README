@@ -1,36 +1,83 @@
-http://plugins.ardes.com > inherit_views
+garlic - lightweight continuous integration for rails using git
 
-= inherit_views
+This is not a CI server, use cruisecontrol.rb for that.  This is a simple set
+of rake tasks that let you specify a bunch of rails builds to run against, and
+dependencies to install.
 
-This plugin allows your controllers to inherit their views from parent controllers.  The default behaviour is to inherit along the ancestor path of the controller, but you can also specify custom inherit view paths to search.
+It works by cloning git repos for all your dependencies (so they all must be
+on git), and then using git to checkout various tags and branches to build
+your app against.
 
-NOTE: this plugin is not aimed at having multiple view paths for your controllers, which is addressed with the view_paths addition to ActionController::Base for rails 2.0.  Rather, within these view paths, you can inherit views from other controller paths.
 
-Example:
+== Example
 
-  class ApplicationController < ActionController::Base
-    inherit_views
-  end
+See it in action by doing this:
 
-  class FooController < ApplicationController
-    # will look for views in 'views/foo', then 'views/application'
-  end
+  git clone git://github.com/ianwhite/inherit_views 
+  cd inherit_views
+  rake garlic:all
 
-  class BarController < FooController
-    # will look for views in 'views/bar', then 'views/foo', then 'view/application'
-  end
+This will clone all the required git repos (done only once), set up the target
+railses (done once), then run the targets.
 
-You can also render the parent view in your views with
-  <%= render_parent %>
+Notes:
+- To run the specs again, you can do rake garlic:run
+- To configure the dependencies and targets, take a look at the top level Rakefile
+  * inherit_views doesn't work with 1.2.x, to test this try adding
+      target '1.2.6', :tag => 'v1.2.6'
+    in the Rakefile, then running
+      rake garlic:prepare
+      rake garlic:run
+    and you'll see that it fails against 1.2.6
+- In this example, the garlic repo has been added using braid, but you could add
+  it with submodules, or just have a completely different repo which does your
+  CI.
+    
+== Example config
+
+In case you don't feel like downloading the above repo, here's the config:
+
+  require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
+
+  garlic do
+    # default paths are 'garlic/work', and 'garlic/repos'
+    work_path "tmp/work"
+    repo_path "tmp/repos"
   
-See Ardes::InheritViews for more details
+    # repo, give a url, specify :local to use a local repo (faster
+    # and will still update from the origin url)
+    repo 'rails', :url => 'git://github.com/rails/rails' #, :local => "~/dev/vendor/rails"
+    repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
+    repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'
+    repo 'inherit_views', :url => '.'
+  
+    # for target, default repo is 'rails', default branch is 'master'
+    target 'edge'
+    target '2.0-stable', :branch => 'origin/2-0-stable'
+    target '2.0.2', :tag => 'v2.0.2'
+  
+    all_targets do
+      prepare do
+        plugin 'rspec'
+        plugin 'rspec-rails', :branch => 'origin/aliased-render-partial' do
+          sh "script/generate rspec -f"
+        end
+        plugin 'inherit_views'
+      end
+    
+      run do
+        cd "vendor/plugins/inherit_views" do
+          sh "rake spec:rcov:verify"
+        end
+      end
+    end
+  end   
+   
+== First release
 
-=== Specs and Coverage
-* {SPECDOC}[link:files/SPECDOC.html] lists the specifications
-* {RSpec Report}[link:rspec_report.html] is a report of spec pass/fails
-* {RCov Report}[link:coverage/index.html] is the rcov report
+This is the first release, so there is plenty of scope for changes and improvement
+If you want to lend a hand, get in touch.
 
-=== Testing
+(c) Ian White 2008 - ian.w.white@gmail.com
+MIT Licence
 
-RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
-<tt>test/</tt> Do rake --tasks for more details.
