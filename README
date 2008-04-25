@@ -1,60 +1,36 @@
-garlic - lightweight continuous integration for rails using git
+http://plugins.ardes.com > inherit_views
 
-This is not a CI server, use cruisecontrol.rb for that.  This is a simple set
-of rake tasks that let you specify a bunch of rails builds to run against, and
-dependencies to install.
+= inherit_views
 
-It works by cloning git repos for all your dependencies (so they all must be
-on git), and then using git to checkout various tags and branches to build
-your app against.
+This plugin allows your controllers to inherit their views from parent controllers.  The default behaviour is to inherit along the ancestor path of the controller, but you can also specify custom inherit view paths to search.
 
-EXPERIMENTAL - currently under development
+NOTE: this plugin is not aimed at having multiple view paths for your controllers, which is addressed with the view_paths addition to ActionController::Base for rails 2.0.  Rather, within these view paths, you can inherit views from other controller paths.
 
-# See it in action by downloading git://github.com/ianwhite/inherit_views and
-# running rake run_targets in the top-level directory.
+Example:
 
-# This will clone all the required git repos (done only once), set up the target
-# railses (done once), then run the targets.
+  class ApplicationController < ActionController::Base
+    inherit_views
+  end
 
-# = Example
-#
-# The example is running an rcov task for a plugin on three targets of rails.
-# I'm assuming there's a git repo for the plugin, and the plugin has a task
-# called 'rcov' that runs the rcov task.  This is intended to be run when
-# the plugin is set up within a rails project.
-#
-# 1. Add garlic as a submodule, or braid it
-#
-# 2. In your Rakefile:
-#
-#   require File.join(File.dirname(__FILE__),'garlic/lib/garlic_tasks')
-#
-#   garlic do
-#     # repo, give a url, and optional branch
-#     repo 'rails', :url => 'git://github.com/rails/rails'
-#     repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
-#     repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails', :branch => 'aliased-render-partial'
-#     repo 'inherit_views', :url => '.'
-#     
-#     # for target, default repo is 'rails', default tree is 'master'
-#     target 'edge'
-#     target '2.0-stable', :branch => 'origin/2-0-stable' # same as :tree => 'origin/2-0-stable'
-#     target '2.0.2', :tag => 'v2.0.2' # same as :tree => 'v2.0.2'
-#     
-#     all_targets do
-#       prepare do
-#         plugin 'rspec'
-#         plugin 'inherit_views'
-#         plugin 'rspec-rails' do
-#           sh "script/server rspec -f"
-#         end
-#       end
-#       
-#       run do
-#         cd "vendor/plugins/inherit_views" do
-#           sh "rake cruise"
-#         end
-#       end
-#     end
-#   end
-#
+  class FooController < ApplicationController
+    # will look for views in 'views/foo', then 'views/application'
+  end
+
+  class BarController < FooController
+    # will look for views in 'views/bar', then 'views/foo', then 'view/application'
+  end
+
+You can also render the parent view in your views with
+  <%= render_parent %>
+  
+See Ardes::InheritViews for more details
+
+=== Specs and Coverage
+* {SPECDOC}[link:files/SPECDOC.html] lists the specifications
+* {RSpec Report}[link:rspec_report.html] is a report of spec pass/fails
+* {RCov Report}[link:coverage/index.html] is the rcov report
+
+=== Testing
+
+RSpec is used for testing, so the tests are in <tt>spec/</tt> rather than
+<tt>test/</tt> Do rake --tasks for more details.
