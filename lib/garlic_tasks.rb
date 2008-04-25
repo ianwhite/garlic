@@ -2,7 +2,9 @@ $LOAD_PATH.unshift(File.expand_path(File.dirname(__FILE__)))
 require "garlic"
 
 def garlic(&block)
-  @garlic ||= Garlic::Garlic.new(self, &block)
+  @garlic ||= Garlic::Garlic.new(self)
+  @garlic.configure(&block) if block_given?
+  @garlic
 end
 
 namespace :garlic do
