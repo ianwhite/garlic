@@ -31,7 +31,7 @@ module Garlic
         puts "\nSkipping #{name}, as it exists"
       else
         puts "\nInstalling #{name}"
-        sh "git clone #{url} #{"--reference #{local}" if local} #{path}"
+        sh "git clone #{url}#{" --reference #{local}" if local} #{path}"
       end
     end
 
