@@ -1,15 +1,19 @@
 module Garlic
-  # This class represents a local git repo which is a clone of a specified url
+  # This class represents a local git repo
   class Repo
     attr_reader :url, :local, :path, :name
 
     def initialize(options = {})
-      @url = options[:url] or raise ArgumentError, "Repo requires a :url"
+      if @url = options[:url]
+        @url = File.expand_path(@url) unless options[:url] =~ /^\w+(:|@)/
+      end
+      
       @path = options[:path] or raise ArgumentError, "Repo requires a :path"
-      @url = File.expand_path(@url) unless options[:url] =~ /^\w+(:|@)/
       @path = File.expand_path(@path)
+      
       @local = options[:local]
       @local = File.expand_path(@local) if @local
+      
       @name = options[:name] || File.basename(@path)
     end
 
@@ -24,6 +28,10 @@ module Garlic
         end
         nil
       end
+      
+      def head_sha(path)
+        `cd #{path}; git log HEAD -1 --pretty=format:\"%H\"`
+      end
     end
     
     def install
@@ -36,14 +44,18 @@ module Garlic
     end
 
     def update
+      puts "\nUpdating #{name}..."
       if Repo.path?(path)
-        puts "\nUpdating #{name}..."
-        begin
-          checkout 'master'
-          cd(path) { sh "git pull origin master", :verbose => false }
-        rescue Exception => e
-          puts "\n\nIt seems there was a problem.\nTry running rake garlic:reset_repos\n\n"
-          raise e
+        if url
+          begin
+            checkout 'master'
+            cd(path) { sh "git pull origin master", :verbose => false }
+          rescue Exception => e
+            puts "\n\nIt seems there was a problem.\nTry running rake garlic:reset_repos\n\n"
+            raise e
+          end
+        else
+          puts "No url for #{name} given, so not updating"
         end
       elsif File.exists?(path)
         raise "\nRepo #{name} (#{path}) is not a git repo.\nRemove it and run rake garlic:install_repos\n\n"
@@ -55,7 +67,7 @@ module Garlic
     def check
       if !Repo.path?(path)
         raise "#{name} is missing from #{path}, or is not a git repo"
-      elsif !same_url?(origin_url)
+      elsif url && !same_url?(origin_url)
         raise "#{name}'s url has changed from #{url} to #{origin_url}"
       end
     end
@@ -79,6 +91,13 @@ module Garlic
         rm "#{name}.tar"
       end
     end
+    
+    def clone_to(clone_path)
+      mkdir_p File.dirname(clone_path)
+      cd (File.dirname(clone_path)) do
+        sh "git clone #{path} #{clone_path}"
+      end
+    end
 
     def origin_url
       unless @origin_url
@@ -93,7 +112,7 @@ module Garlic
     end
 
     def head_sha
-      `cd #{path}; git log HEAD -1 --pretty=format:\"%H\"`
+      Repo.head_sha(path)
     end
   end
 end

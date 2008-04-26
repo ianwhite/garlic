@@ -16,7 +16,7 @@ module Garlic
     end
 
     def repo(name, options = {})
-      options[:path] = "#{garlic.repo_path}/#{name}"
+      options[:path] ||= "#{garlic.repo_path}/#{name}"
       garlic.repos << Repo.new(options)
     end
 

@@ -54,16 +54,37 @@ module Garlic
       repo = garlic.repo(repo) unless repo.is_a?(Repo)
       tree_ish = Repo.tree_ish(options)
       
-      if read_sha(install_path) == repo.head_sha
-        puts "#{install_path} is up to date"
+      if options[:clone]
+        if Repo.path?(install_path)
+          puts "#{install_path} exists, and is a repo - leaving it up to you"
+        else
+          puts "cloning #{repo.name} to #{install_path}"
+          repo.clone_to(File.join(path, install_path))
+        end
+      
       else
-        puts "#{install_path} needs update, exporting archive from #{repo.name}..."
-        repo.checkout(tree_ish) if tree_ish
-        repo.export_to(File.join(path, install_path))
-        cd(path) { garlic.instance_eval(&block) } if block_given?
-        write_sha(install_path, repo.head_sha)
+        if read_sha(install_path) == repo.head_sha
+          puts "#{install_path} is up to date"
+        else
+          puts "#{install_path} needs update, exporting archive from #{repo.name}..."
+          if tree_ish
+            puts "Checking out #{tree_ish} of #{repo.name}"
+            old_tree_ish = repo.head_sha
+            repo.checkout(tree_ish) if tree_ish
+          end
+          
+          repo.export_to(File.join(path, install_path))
+          cd(path) { garlic.instance_eval(&block) } if block_given?
+          write_sha(install_path, repo.head_sha)
+          
+          if tree_ish
+            puts "Checking #{repo.name} back to where it was (#{old_tree_ish})"
+            repo.checkout(old_tree_ish)
+          end
+        end
       end
     end
+    
     
     class Runner
       attr_reader :target
