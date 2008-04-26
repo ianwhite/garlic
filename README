@@ -15,6 +15,7 @@ See it in action by doing this:
 
   git clone git://github.com/ianwhite/inherit_views 
   cd inherit_views
+  git clone git://github.com/ianwhite/garlic
   rake garlic:all
 
 This will clone all the required git repos (done only once), set up the target
@@ -29,20 +30,16 @@ Notes:
       rake garlic:prepare
       rake garlic:run
     and you'll see that it fails against 1.2.6
-- In this example, the garlic repo has been added using braid, but you could add
-  it with submodules, or just have a completely different repo which does your
-  CI.
     
+
 == Example config
 
 In case you don't feel like downloading the above repo, here's the config:
 
-  require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
-
   garlic do
     # default paths are 'garlic/work', and 'garlic/repos'
-    work_path "tmp/work"
-    repo_path "tmp/repos"
+    work_path "my/work"
+    repo_path "my/repos"
   
     # repo, give a url, specify :local to use a local repo (faster
     # and will still update from the origin url)
@@ -72,7 +69,62 @@ In case you don't feel like downloading the above repo, here's the config:
       end
     end
   end   
+
    
+== Using it in your own app/plugin
+
+To use garlic on one of your plugins/apps to this:
+
+1.  Add the following to your main Rakefile (at the bottom is ok)
+
+  # load up garlic if it's here
+  if File.directory?(File.join(File.dirname(__FILE__), 'garlic'))
+    require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
+    require File.join(File.dirname(__FILE__), 'garlic')
+  end
+  
+2. Edit your garlic.rb file to specify what should be done.
+
+   Here's an example: you are garlicing a plugin called acts_as_vixen, and you
+   want to run 'rake test' in that plugin, against the 1.2.x and 2.0.x stable
+   branches of rails, ad 1.2.3.
+   
+   Also assuming that you have a local clone of rails in ~/clones/rails
+   
+    garlic do
+      repo 'rails', :url => 'git://github.com/rails/rails', :local => '~/clones/rails'
+      repo 'acts_as_vixen', :url => '.'
+
+      target '1.2.3', :tag => 'v1.2.3'
+      target '1.2-stable', :branch => 'origin/1-2-stable'
+      target '2.0-stable', :branch => 'origin/2-0-stable'
+
+      all_targets do
+        prepare do
+          plugin 'acts_as_vixen'
+        end
+
+        run do
+          cd "vendor/plugins/acts_as_vixen" do
+            sh "rake test"
+          end
+        end
+      end
+    end
+
+3. Get garlic:
+    
+   git clone git://github.com/ianwhite/garlic.git garlic
+   
+   (and ignore it in your repo)
+   
+   echo "garlic/*" >> .gitignore
+
+4. Run it:
+
+   rake garlic:all
+
+
 == First release
 
 This is the first release, so there is plenty of scope for changes and improvement
