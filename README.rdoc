@@ -1,4 +1,4 @@
-garlic - lightweight continuous integration for rails using git
+== garlic: lightweight continuous integration for rails using git
 
 This is not a CI server, use cruisecontrol.rb for that.  This is a simple set
 of rake tasks that let you specify a bunch of rails builds to run against, and
@@ -9,7 +9,7 @@ on git), and then using git to checkout various tags and branches to build
 your app against.
 
 
-== Example
+=== Example
 
 See it in action by doing this:
 
@@ -32,7 +32,7 @@ Notes:
     and you'll see that it fails against 1.2.6
     
 
-== Example config
+=== Example config
 
 In case you don't feel like downloading the above repo, here's the config:
 
@@ -71,7 +71,7 @@ In case you don't feel like downloading the above repo, here's the config:
   end   
 
    
-== Using it in your own app/plugin
+=== Using it in your own app/plugin
 
 To use garlic on one of your plugins/apps to this:
 
@@ -125,7 +125,7 @@ To use garlic on one of your plugins/apps to this:
    rake garlic:all
 
 
-== First release
+=== First release
 
 This is the first release, so there is plenty of scope for changes and improvement
 If you want to lend a hand, get in touch.
