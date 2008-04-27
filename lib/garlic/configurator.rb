@@ -16,6 +16,7 @@ module Garlic
     end
 
     def repo(name, options = {})
+      options[:name] = name
       options[:path] ||= "#{garlic.repo_path}/#{name}"
       garlic.repos << Repo.new(options)
     end
@@ -26,6 +27,7 @@ module Garlic
     end
     
     def target(name, options = {}, &block)
+      options[:name] = name
       options[:path] = "#{garlic.work_path}/#{name}"
       BlockParser.new(options, [:prepare, :run], &block) if block_given?
       garlic.targets << Target.new(garlic, options)
