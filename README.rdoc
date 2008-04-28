@@ -1,4 +1,4 @@
-== garlic: lightweight continuous integration for rails using git
+= garlic: lightweight continuous integration for rails using git
 
 This is not a CI server, use cruisecontrol.rb for that.  This is a simple set
 of rake tasks that let you specify a bunch of rails builds to run against, and
@@ -9,30 +9,35 @@ on git), and then using git to checkout various tags and branches to build
 your app against.
 
 
-=== Example
+== Example
 
-See it in action by doing this:
+To see garlic in action, download resources_controller, a rails plugin that uses
+garlic for CI.
 
-  git clone git://github.com/ianwhite/inherit_views 
-  cd inherit_views
-  git clone git://github.com/ianwhite/garlic
+  git clone git://github.com/ianwhite/resources_controller 
+  cd resources_controller
+  cp garlic_example.rb garlic.rb # you might like to look at this file and edit\
+                                 # it if you have local clones of rails and rspec
+  rake get_garlic
   rake garlic:all
 
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.
 
-Notes:
+=== Notes:
+
 - To run the specs again, you can do rake garlic:run
+- If you've made changes upstream, or want to check againts other upstream changes
+  rake garlic:all
 - To configure the dependencies and targets, take a look at the top level Rakefile
-  * inherit_views doesn't work with 1.2.x, to test this try adding
-      target '1.2.6', :tag => 'v1.2.6'
+  * resources_controller doesn't work with 1.2.3, to test this try adding
+      target '1.2.3', :tag => 'v1.2.3'
     in the Rakefile, then running
       rake garlic:prepare
       rake garlic:run
-    and you'll see that it fails against 1.2.6
+    and you'll see that it fails against 1.2.3
     
-
-=== Example config
+== Example config
 
 In case you don't feel like downloading the above repo, here's the config:
 
@@ -41,47 +46,40 @@ In case you don't feel like downloading the above repo, here's the config:
     work_path "my/work"
     repo_path "my/repos"
   
-    # repo, give a url, specify :local to use a local repo (faster
-    # and will still update from the origin url)
-    repo 'rails', :url => 'git://github.com/rails/rails' #, :local => "~/dev/vendor/rails"
-    repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
-    repo 'rspec-rails', :url => 'git://github.com/ianwhite/rspec-rails'
-    repo 'inherit_views', :url => '.'
-  
-    # for target, default repo is 'rails', default branch is 'master'
+    repo 'rails', :url => 'git://github.com/rails/rails'#, :local => "~/dev/vendor/rails"
+    repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'#, :local => "~/dev/vendor/rspec"
+    repo 'rspec-rails', :url => 'git://github.com/dchelimsky/rspec-rails'#, :local => "~/dev/vendor/rspec-rails"
+    repo 'resources_controller', :path => '.'
+
     target 'edge'
     target '2.0-stable', :branch => 'origin/2-0-stable'
     target '2.0.2', :tag => 'v2.0.2'
-  
+
     all_targets do
       prepare do
+        plugin 'resources_controller', :clone => true
         plugin 'rspec'
-        plugin 'rspec-rails', :branch => 'origin/aliased-render-partial' do
-          sh "script/generate rspec -f"
-        end
-        plugin 'inherit_views'
+        plugin('rspec-rails') { sh "script/generate rspec -f" }
       end
-    
+
       run do
-        cd "vendor/plugins/inherit_views" do
-          sh "rake spec:rcov:verify"
-        end
+        cd("vendor/plugins/resources_controller") { sh "rake spec:rcov:verify" }
       end
     end
   end   
 
    
-=== Using it in your own app/plugin
+== Using it in your own app/plugin
 
 To use garlic on one of your plugins/apps to this:
 
-1.  Add the following to your main Rakefile (at the bottom is ok)
+1. Add the following to your main Rakefile (at the bottom is ok)
 
-  # load up garlic if it's here
-  if File.directory?(File.join(File.dirname(__FILE__), 'garlic'))
-    require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
-    require File.join(File.dirname(__FILE__), 'garlic')
-  end
+    # load up garlic if it's here
+    if File.directory?(File.join(File.dirname(__FILE__), 'garlic'))
+      require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
+      require File.join(File.dirname(__FILE__), 'garlic')
+    end
   
 2. Edit your garlic.rb file to specify what should be done.
 
@@ -114,15 +112,15 @@ To use garlic on one of your plugins/apps to this:
 
 3. Get garlic:
     
-   git clone git://github.com/ianwhite/garlic.git garlic
+    git clone git://github.com/ianwhite/garlic.git garlic
    
    (and ignore it in your repo)
    
-   echo "garlic/*" >> .gitignore
+    echo "garlic/*" >> .gitignore
 
 4. Run it:
 
-   rake garlic:all
+    rake garlic:all
 
 
 === First release
