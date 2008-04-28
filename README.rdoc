@@ -32,7 +32,7 @@ railses (done once), then run the targets.
 - To configure the dependencies and targets, take a look at the top level Rakefile
   * resources_controller doesn't work with 1.2.3, to test this try adding
       target '1.2.3', :tag => 'v1.2.3'
-    in the Rakefile, then running
+    in garlic.rb, then running
       rake garlic:prepare
       rake garlic:run
     and you'll see that it fails against 1.2.3
