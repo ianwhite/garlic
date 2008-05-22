@@ -62,7 +62,7 @@ module Garlic
           puts "cloning #{repo.name} to #{install_path}"
           repo.clone_to(File.join(path, install_path))
         end
-        cd(install_path) { sh "git checkout #{tree_ish}" } if tree_ish
+        cd(install_path) { sh "git checkout #{tree_ish || 'origin/master'}" }
       
       else
         if read_sha(install_path) == repo.head_sha
