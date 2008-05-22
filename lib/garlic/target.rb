@@ -57,7 +57,7 @@ module Garlic
       if options[:clone]
         if Repo.path?(install_path)
           puts "#{install_path} exists, and is a repo"
-          cd(install_path) { sh "git pull origin #{tree_ish}" }
+          cd(install_path) { sh "git fetch origin" }
         else
           puts "cloning #{repo.name} to #{install_path}"
           repo.clone_to(File.join(path, install_path))
