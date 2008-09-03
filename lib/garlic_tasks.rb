@@ -11,10 +11,13 @@ namespace :garlic do
   desc "Install repos, update repos, prepare targets, and run CI in them"
   task :all => [:install_repos, :update_repos, :prepare, :run]
   
-  desc "Prepare each of the rails targets"
-  task :prepare => :check_repos do
+  desc "Prepare each target WITHOUT checking the repo status"
+  task :prepare_without_check do
     garlic.prepare
   end
+
+  desc "Prepare each of the rails targets"
+  task :prepare => [:check_repos, :prepare_without_check]
 
   desc "Run the CI task in all targets"
   task :run do
