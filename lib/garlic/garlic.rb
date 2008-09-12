@@ -55,7 +55,7 @@ module Garlic
     end
 
     def prepare
-      targets.each {|target| target.prepare }
+      determine_targets.each {|target| target.prepare }
     ensure
       repo('rails').checkout('master') # we get rails back to master if something goes wrong
     end
