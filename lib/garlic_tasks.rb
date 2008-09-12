@@ -7,23 +7,23 @@ def garlic(&block)
   @garlic
 end
 
+desc "Prepare and run specified TARGET(S) (default all)"
+task :garlic => ['garlic:prepare_targets', 'garlic:run_targets']
+
 namespace :garlic do
-  desc "Install repos, update repos, prepare targets, and run CI in them"
-  task :all => [:install_repos, :update_repos, :prepare, :run]
+  desc "Install repos, update repos, check repos, prepare targets, and run CI in them"
+  task :all => [:install_repos, :update_repos, :check_repos, :prepare_targets, :run_targets]
   
-  desc "Prepare each target WITHOUT checking the repo status"
-  task :prepare_without_check do
+  desc "Prepare specified TARGET(S) (default all)"
+  task :prepare_targets do
     garlic.prepare
   end
 
-  desc "Prepare each of the rails targets"
-  task :prepare => [:check_repos, :prepare_without_check]
-
-  desc "Run the CI task in all targets"
-  task :run do
+  desc "Run the CI 'run' task in specified TARGET(S) (default all)"
+  task :run_targets do
     garlic.run
   end
-
+  
   desc "Install required repositories"
   task :install_repos do
     garlic.install_repos

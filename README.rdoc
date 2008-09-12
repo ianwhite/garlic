@@ -24,28 +24,90 @@ garlic for CI.
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.
 
-=== Notes:
+=== Once you've made some changes
 
-- To run the specs again, you can do rake garlic:run
-- If you've made changes upstream, or want to check againts other upstream changes
+You can prepare and run all the targets again (without fetching remote repos) by doing
+
+ rake garlic
+ 
+This will prepare all the targets, using the current HEAD of the repos, and run the
+CI task again.
+
+=== Specifying particular targets
+
+If you just want to run against a particular target or targets, you can use the TARGET or TARGETS
+env var.
+
+  rake garlic TARGET=edge
+  rake garlic TARGETS=2.0.1,2.0.2
+  
+== Example workflow
+
+Let's say I'm patching resources_controller.
+
+First I grab it, and set up garlic
+  
+  git clone git://github.com/ianwhite/resources_controller.git
+  cd resources_controller
+  rake get_garlic
+  cp garlic_example.rb garlic.rb
+  # I could now edit garlic.rb to point the repos at my local copies, for speed
+  
+Now, I download and run the CI suite
+  
   rake garlic:all
-- To configure the dependencies and targets, take a look at the top level Rakefile
-  * resources_controller doesn't work with 1.2.3, to test this try adding
-      target '1.2.3', :tag => 'v1.2.3'
-    in garlic.rb, then running
-      rake garlic:prepare
-      rake garlic:run
-    and you'll see that it fails against 1.2.3
-    
-== Example config
 
-In case you don't feel like downloading the above repo, here's the config:
+Now, I make some changes
+
+  git checkout -b my_change
+  # ... commit some changes into 'my_change'
+  rake garlic
+  # ... everything is fine, so I can merge these into master, or send a pull request
+
+=== How do I run the specs on uncommitted code?
+
+The best way is to make the changes in one of the 'work' targets.  For example:
+
+  # after running rake garlic:all
+  cd garlic/work/edge/vendor/plugins/resources_controller
+  # ... make changes without committing
+  rake spec
+  # ... it passes, so commit
+  git commit -m "My great change"
+  
+Now you can push these changes back upstream to your local 'master' repo
+
+  git push origin my_changes # or you could push to master branch or whatever
+  
+Then cd back up there, and run rake garlic to verify your changes against the other
+targets.  If these all pass, you can push, or send a pull request
+
+== How to add garlic to your repo (example: rails plugin)
+
+==== 1. add the get_garlic task to your main Rakefile
+
+  # load up garlic if it's here
+  if File.directory?(File.join(File.dirname(__FILE__), 'garlic'))
+    require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
+    require File.join(File.dirname(__FILE__), 'garlic')
+  end
+
+  desc "clone the garlic repo (for running ci tasks)"
+  task :get_garlic do
+    sh "git clone git://github.com/ianwhite/garlic.git garlic"
+  end
+
+==== 2. add a garlic.rb or garlic_example.rb 
+
+I tend to use garlic_example.rb, and others can copy this to garlic.rb, which can be modified and ignored by git.
+
+An example garlic.rb:
 
   garlic do
     # default paths are 'garlic/work', and 'garlic/repos'
     work_path "my/work"
     repo_path "my/repos"
-  
+
     repo 'rails', :url => 'git://github.com/rails/rails'#, :local => "~/dev/vendor/rails"
     repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'#, :local => "~/dev/vendor/rspec"
     repo 'rspec-rails', :url => 'git://github.com/dchelimsky/rspec-rails'#, :local => "~/dev/vendor/rspec-rails"
@@ -66,64 +128,39 @@ In case you don't feel like downloading the above repo, here's the config:
         cd("vendor/plugins/resources_controller") { sh "rake spec:rcov:verify" }
       end
     end
-  end   
-
-   
-== Using it in your own app/plugin
-
-To use garlic on one of your plugins/apps to this:
-
-1. Add the following to your main Rakefile (at the bottom is ok)
-
-    # load up garlic if it's here
-    if File.directory?(File.join(File.dirname(__FILE__), 'garlic'))
-      require File.join(File.dirname(__FILE__), 'garlic/lib/garlic_tasks')
-      require File.join(File.dirname(__FILE__), 'garlic')
-    end
+  end
   
-2. Edit your garlic.rb file to specify what should be done.
+==== 3. ignore the garlic artefacts
 
-   Here's an example: you are garlicing a plugin called acts_as_vixen, and you
-   want to run 'rake test' in that plugin, against the 1.2.x and 2.0.x stable
-   branches of rails, ad 1.2.3.
-   
-   Also assuming that you have a local clone of rails in ~/clones/rails
-   
-    garlic do
-      repo 'rails', :url => 'git://github.com/rails/rails', :local => '~/clones/rails'
-      repo 'acts_as_vixen', :url => '.'
+Example .gitignore (for the case where you have garlic_example.rb)
 
+  garlic.rb
+  garlic
+  
+==== 4. Run it
+
+  rake garlic:all
+  
+And to run it again, once you've made changes
+
+  rake garlic
+  
+To make sure you're running against the latest repos:
+
+  rake garlic:update_repos
+  
+== Notes
+
+- To configure the dependencies and targets, take a look at the top level Rakefile
+  * resources_controller doesn't work with 1.2.3, to test this try adding
       target '1.2.3', :tag => 'v1.2.3'
-      target '1.2-stable', :branch => 'origin/1-2-stable'
-      target '2.0-stable', :branch => 'origin/2-0-stable'
-
-      all_targets do
-        prepare do
-          plugin 'acts_as_vixen'
-        end
-
-        run do
-          cd "vendor/plugins/acts_as_vixen" do
-            sh "rake test"
-          end
-        end
-      end
-    end
-
-3. Get garlic:
-    
-    git clone git://github.com/ianwhite/garlic.git garlic
-   
-   (and ignore it in your repo)
-   
-    echo "garlic/*" >> .gitignore
-
-4. Run it:
-
-    rake garlic:all
+    in garlic.rb, then running
+      rake garlic:prepare
+      rake garlic:run
+    and you'll see that it fails against 1.2.3
 
 
-=== First release
+== First release
 
 This is the first release, so there is plenty of scope for changes and improvement
 If you want to lend a hand, get in touch.
