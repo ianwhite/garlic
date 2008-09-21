@@ -110,7 +110,7 @@ module Garlic
       end
 
       def plugin(plugin, options = {}, &block)
-        target.send(:install_dependency, plugin, "vendor/plugins/#{plugin}", options, &block)
+        target.send(:install_dependency, plugin, "vendor/plugins/#{options[:as] || plugin}", options, &block)
       end
 
       def dependency(repo, dest, options = {}, &block)
