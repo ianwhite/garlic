@@ -66,7 +66,7 @@ module Garlic
 
       puts "\n#{'='*78}\nTargets: #{target_names.join(', ')}\n#{'='*78}\n"
       these_targets.each do |target|
-        puts "\n#{'-'*78}\nTarget: #{target.name}\n#{'-'*78}\n"
+        puts "\n#{'-'*78}\nTarget: #{target.name} (commit #{target.rails_sha[0..6]}, run at #{Time.now})\n#{'-'*78}\n"
         begin
           target.run
           puts "\ntarget: #{target.name} PASS"

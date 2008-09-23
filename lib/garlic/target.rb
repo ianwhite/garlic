@@ -25,6 +25,10 @@ module Garlic
       runner.run(&@run) if @run
     end
     
+    def rails_sha
+      read_sha('vendor/rails')
+    end
+    
   private
     def runner
       @runner ||= Runner.new(self)
@@ -53,6 +57,8 @@ module Garlic
     def install_dependency(repo, install_path = ".", options = {}, &block)
       repo = garlic.repo(repo) unless repo.is_a?(Repo)
       tree_ish = Repo.tree_ish(options)
+      
+      puts tree_ish
       
       if options[:clone]
         if Repo.path?(install_path)
