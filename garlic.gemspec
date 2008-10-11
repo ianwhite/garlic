@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.date = %q{2008-10-11}
   s.description = %q{Lightweight set of rake tasks to help with CI.}
   s.email = %q{ian.w.white@gmail.com}
-  s.files = ["lib/garlic/configurator.rb", "lib/garlic/garlic.rb", "lib/garlic/repo.rb", "lib/garlic/target.rb", "lib/garlic.rb", "lib/garlic_tasks.rb", "MIT-LICENCE", "README.rdoc", "TODO", "spec/garlic/repo_spec.rb"]
+  s.files = ["lib/garlic/configurator.rb", "lib/garlic/garlic.rb", "lib/garlic/repo.rb", "lib/garlic/target.rb", "lib/garlic.rb", "lib/garlic_tasks.rb", "MIT-LICENSE", "README.rdoc", "TODO", "spec/garlic/repo_spec.rb"]
   s.homepage = %q{http://github.com/ianwhite/garlic/tree}
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.0}
