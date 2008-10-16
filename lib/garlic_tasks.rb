@@ -18,6 +18,11 @@ namespace :garlic do
   task :prepare_targets do
     garlic.prepare
   end
+  
+  desc "Clean all of the work away, but not the repos"
+  task :clean do
+    garlic.clean
+  end
 
   desc "Run the CI 'run' task in specified TARGET(S) (default all)"
   task :run_targets do
