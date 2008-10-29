@@ -54,6 +54,10 @@ module Garlic
       repos.each {|repo| repo.reset}
     end
 
+    def clean
+      rm_rf work_path
+    end
+    
     def prepare
       determine_targets.each {|target| target.prepare }
     ensure
