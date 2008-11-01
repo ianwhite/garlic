@@ -15,6 +15,19 @@ Garlic works by cloning git repos for all your dependencies (so they all must be
 git repos), and then using git to checkout various tags and branches to build
 your app against.
 
+h2. Installing
+
+Install the garlic gem
+
+  sudo gem install ianwhite-garlic --source=http://gems.github.com
+
+(if it's not installing as a gem from github)
+
+  git clone git://github.com/ianwhite/garlic
+  cd garlic
+  rake package
+  sudo gem install pkg/*.gem
+
 h2. Example
 
 To see garlic in action, download response_for, a rails plugin that uses
@@ -22,13 +35,9 @@ garlic for CI.
 
   git clone git://github.com/ianwhite/response_for 
 
-Install the garlic gem
-
-  sudo gem install ianwhite-garlic --source=http://gems.github.com
-
 run garlic
  
-  rake garlic:all
+  garlic all
 
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.
@@ -37,7 +46,7 @@ h3. Once you've made some changes
 
 You can prepare and run all the targets again (without fetching remote repos) by doing
 
- rake garlic
+ garlic
  
 This will prepare all the targets, using the current HEAD of the repos, and run the
 CI task again.
@@ -47,9 +56,17 @@ h3. Specifying particular targets
 If you just want to run against a particular target or targets, you can use the TARGET or TARGETS
 env var.
 
-  rake garlic TARGET=edge
-  rake garlic TARGETS=2.0.1,2.0.2
+  garlic -t edge
+
+h3. Running Shell commands across multiple targets
+
+Check dis out
+
+  garlic shell  # "Example output":http://gist.github.com/21496
   
+---
+The following still needs to be updated for the new gem/cmd-line version
+
 h2. Example workflow
 
 Let's say I'm patching resources_controller.
