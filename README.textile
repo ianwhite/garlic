@@ -30,6 +30,10 @@ You have a plugin and you want it tested against different versions of rails?
 
 * See what happens, edit garlic.rb to change rails versions and other stuff.
 
+<pre>
+  garlic --help # will probably help
+<pre>
+
 h2. Installing
 
 Install the garlic gem
