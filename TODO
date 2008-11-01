@@ -1,2 +1,1 @@
-* Make garlic a gem - and remove the need to clone the garlic repo each time
 * rewrite using grit? (research: is grit the defacto standard for ruby controlling git?)

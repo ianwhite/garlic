@@ -1,3 +1,5 @@
+require 'shell'
+
 module Garlic
   class Target
     attr_reader :garlic, :path, :name, :rails_repo_name, :tree_ish
@@ -20,7 +22,7 @@ module Garlic
       runner.run(&@prepare) if @prepare
     end
     
-    def run
+    def run(command = nil)
       runner.run(&garlic.all_targets[:run]) if garlic.all_targets[:run]
       runner.run(&@run) if @run
     end
@@ -29,9 +31,18 @@ module Garlic
       read_sha('vendor/rails')
     end
     
+    def shell
+      unless @shell
+        @shell = Shell.new
+        @shell.verbose = false
+        @shell.cd path
+      end
+      @shell
+    end
+    
   private
     def runner
-      @runner ||= Runner.new(self)
+      @runner ||= Target::Runner.new(self)
     end
     
     def read_sha(install_path)

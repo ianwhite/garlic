@@ -9,21 +9,21 @@ $LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
 require 'garlic'
 
 spec = Gem::Specification.new do |s|
-  s.name              = "garlic"
-  s.version           = Garlic::Version::String
-  s.summary           = "Lightweight set of rake tasks to help with CI."
-  s.description       = "Lightweight set of rake tasks to help with CI."
-  s.author            = "Ian White"
-  s.email             = "ian.w.white@gmail.com"
-  s.homepage          = "http://github.com/ianwhite/garlic/tree"
-  s.has_rdoc          = false
-  s.test_files        = FileList["spec/**/*_spec.rb"]
-  s.files             = FileList[
-    "lib/**/*.rb",
-    "MIT-LICENSE",
-    "README.rdoc",
-    "TODO"
+  s.name          = "garlic"
+  s.version       = Garlic::Version::String
+  s.summary       = "Lightweight set of rake tasks to help with CI."
+  s.description   = "Lightweight set of rake tasks to help with CI."
+  s.author        = "Ian White"
+  s.email         = "ian.w.white@gmail.com"
+  s.homepage      = "http://github.com/ianwhite/garlic/tree"
+  s.has_rdoc      = true
+  s.rdoc_options << "--title" << "Garlic" << "--line-numbers"
+  s.test_files    = FileList["spec/**/*_spec.rb"]
+  s.files         = FileList[
+    "lib/**/*.rb", "templates/*.rb",
+    "MIT-LICENSE", "README.textile", "TODO", "CHANGELOG"
   ]
+  s.executables   = ["garlic"]
 end
 
 Rake::GemPackageTask.new(spec) do |p|

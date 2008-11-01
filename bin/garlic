@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+
+require 'getoptlong'
+require 'rubygems'
+require 'rake'
+require 'garlic'
+
+include Garlic
+
+USAGE = "USAGE: garlic [options] [command] (try garlic --help)"
+
+HELP = <<-end_doc
+garlic - run a command in different versions of rails
+
+USAGE:  garlic [options] [command]
+
+COMMANDS:
+#{Garlic::Runner.commands_with_description.map{|method, desc| "  %-17s %s" % [method, desc]}.join("\n")}
+  
+  The default command is "default"
+  
+OPTIONS:
+  --help             -h  You're reading it
+  --verbose          -v  Show work
+  --config CONFIG    -c  Specify a different location of garlic config
+  --targets TARGETS  -t  Specify subset of targets, e.g. edge,2.1.0 (default all)
+  --backtrace            Show ruby bakctrace on error
+
+You can generate a sample garlic.rb with
+  garlic generate [TEMPLATE [PLUGIN_NAME]] (Available templates: #{available_templates.join(', ')})
+  
+end_doc
+
+GetoptLong.new(
+  ['--help', '-h', GetoptLong::NO_ARGUMENT],
+  ['--verbose', '-v', GetoptLong::NO_ARGUMENT],
+  ['--targets', '-t', GetoptLong::REQUIRED_ARGUMENT],
+  ['--config', '-c', GetoptLong::REQUIRED_ARGUMENT],
+  ['--backtrace', GetoptLong::NO_ARGUMENT]
+  ).each do |opt, arg|
+  case opt
+  when '--help' then STDOUT << HELP; exit true
+  when '--verbose' then @verbose = true
+  when '--config' then @config_file = arg
+  when '--targets' then @run_targets = arg
+  when '--backtrace' then @backtrace = true
+  end
+end
+
+begin
+  # generate a config file
+  if ARGV.first == 'generate'
+    generate_config(*ARGV[1..-1])
+    
+  # run a garlic command
+  else
+    raise "Unknown command: #{ARGV.first}" unless ARGV.empty? || Garlic::Runner.commands.include?(ARGV.first)
+  
+    # configure the garlic runner
+    garlic @config_file do
+      verbose @verbose
+      run_targets @run_targets
+    end
+  
+    # run the command
+    ARGV << 'default' if ARGV.empty?
+    garlic.send *ARGV
+  end
+  
+rescue Exception => e
+  STDERR << "\n#{USAGE}\n\nError: #{e.message}\n\n"
+  raise e if @backtrace
+  exit false
+end

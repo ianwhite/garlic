@@ -1,18 +1,11 @@
 module Garlic
+  # Configures the garlic runner in a decalarative style
   class Configurator
     attr_reader :garlic
 
     def initialize(garlic, &block)
       @garlic = garlic
       instance_eval(&block) if block_given?
-    end
-
-    def work_path(path)
-      garlic.work_path = path
-    end
-
-    def repo_path(path)
-      garlic.repo_path = path
     end
 
     def repo(name, options = {})
@@ -33,6 +26,19 @@ module Garlic
       garlic.targets << Target.new(garlic, options)
     end
 
+    def respond_to?(method)
+      super || garlic.respond_to?("#{method}=")
+    end
+    
+  protected
+    def method_missing(attribute, value)
+      if garlic.respond_to?("#{attribute}=")
+        garlic.send("#{attribute}=", value)
+      else
+        super
+      end
+    end
+  
     class BlockParser
       attr_reader :options, :whitelist
 
