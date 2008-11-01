@@ -102,8 +102,7 @@ module Garlic
       end
     end
 
-    # highly experimental: subject to change
-    define_command :shell, "Run shell commands across specified targets" do |*path|
+    define_command :shell, "Run shell commands from stdin across specified targets" do |*path|
       shell = Shell.new(determine_targets)
       shell.current_path = path.first if path.first
       shell.run
