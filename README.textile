@@ -19,12 +19,14 @@ h2. Get up and running quickly
 
 You have a plugin and you want it tested against different versions of rails?
 
-  # install garlic as a gem (see below)
-  # cd into your (say, rspec tested) plugin directory
+* install garlic as a gem (see below)
+* cd into your (say, rspec tested) plugin directory
+  
   garlic generate rspec > garlic.rb
   garlic install_repos
   garlic
-  # see what happens, edit garlic.rb to change rails versions and other stuff
+
+* see what happens, edit garlic.rb to change rails versions and other stuff
 
 h2. Installing
 
