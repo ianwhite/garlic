@@ -197,3 +197,10 @@ If you want to lend a hand, get in touch.
 (c) Ian White 2008 - ian.w.white@gmail.com
 MIT Licence
 
+h2. Lent a hand
+
+Thanks very much to:
+
+* Pat Allan
+
+
