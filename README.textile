@@ -15,6 +15,17 @@ Garlic works by cloning git repos for all your dependencies (so they all must be
 git repos), and then using git to checkout various tags and branches to build
 your app against.
 
+h2. Get up and running quickly
+
+You have a plugin and you want it tested against different versions of rails?
+
+  # install garlic as a gem (see below)
+  # cd into your (say, rspec tested) plugin directory
+  garlic generate rspec > garlic.rb
+  garlic install_repos
+  garlic
+  # see what happens, edit garlic.rb to change rails versions and other stuff
+
 h2. Installing
 
 Install the garlic gem
@@ -65,6 +76,7 @@ Check dis out
   garlic shell  # "Example output":http://gist.github.com/21496
   
 ---
+
 The following still needs to be updated for the new gem/cmd-line version
 
 h2. Example workflow
