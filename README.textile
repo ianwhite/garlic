@@ -21,12 +21,14 @@ You have a plugin and you want it tested against different versions of rails?
 
 * install garlic as a gem (see below)
 * cd into your (say, rspec tested) plugin directory
-  
+
+<pre>
   garlic generate rspec > garlic.rb
   garlic install_repos
   garlic
+</pre>
 
-* see what happens, edit garlic.rb to change rails versions and other stuff
+* See what happens, edit garlic.rb to change rails versions and other stuff.
 
 h2. Installing
 
@@ -71,7 +73,7 @@ env var.
 
   garlic -t edge
 
-h3. Running Shell commands across multiple targets
+h2. Running Shell commands across multiple targets
 
 Check dis out
 
