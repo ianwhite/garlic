@@ -32,7 +32,7 @@ You have a plugin and you want it tested against different versions of rails?
 
 <pre>
   garlic --help # will probably help
-<pre>
+</pre>
 
 h2. Installing
 
