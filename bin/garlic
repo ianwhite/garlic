@@ -15,7 +15,7 @@ garlic - run a command in different versions of rails
 USAGE:  garlic [options] [command]
 
 COMMANDS:
-#{Garlic::Runner.commands_with_description.map{|method, desc| "  %-17s %s" % [method, desc]}.join("\n")}
+#{Garlic::Session.commands_with_description.map{|method, desc| "  %-17s %s" % [method, desc]}.join("\n")}
   
   The default command is "default"
   

@@ -1,4 +1,4 @@
-require "garlic/runner"
+require "garlic/session"
 require "garlic/configurator"
 require "garlic/repo"
 require "garlic/target"
@@ -16,9 +16,9 @@ module Garlic
     String = [Major, Minor, Tiny].join('.')
   end
   
-  # return the current garlic runner
+  # return the current garlic session
   def garlic(config = nil, &block)
-    @garlic ||= Garlic::Runner.new(self)
+    @garlic ||= Garlic::Session.new(self)
     load_config(config)
     @garlic.configure(&block) if block_given?
     @garlic

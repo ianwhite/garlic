@@ -14,7 +14,7 @@ task :garlic do
 end
 
 namespace :garlic do
-  Garlic::Runner.commands_with_description.each do |command, description|
+  Garlic::Session.commands_with_description.each do |command, description|
     desc description
     task command do
       garlic.send command
