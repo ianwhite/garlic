@@ -31,6 +31,8 @@ You can generate a sample garlic.rb with
   
 end_doc
 
+@verbose = false
+
 GetoptLong.new(
   ['--help', '-h', GetoptLong::NO_ARGUMENT],
   ['--verbose', '-v', GetoptLong::NO_ARGUMENT],
@@ -48,14 +50,14 @@ GetoptLong.new(
 end
 
 begin
-  # generate a config file
   if ARGV.first == 'generate'
     generate_config(*ARGV[1..-1])
-    
-  # run a garlic command
   else
-    raise "Unknown command: #{ARGV.first}" unless ARGV.empty? || Garlic::Runner.commands.include?(ARGV.first)
+    # run a garlic command
+    raise "Unknown command: #{ARGV.first}" unless ARGV.empty? || Garlic::Session.commands.include?(ARGV.first)
   
+    verbose(@verbose)
+    
     # configure the garlic runner
     garlic @config_file do
       verbose @verbose

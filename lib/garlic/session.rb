@@ -1,6 +1,6 @@
 module Garlic
   # this class runs the top level garlic commands
-  class Runner
+  class Session
     attr_reader :actor, :run_targets
     attr_accessor :repos, :targets, :all_targets, :repo_path, :work_path, :verbose
 
