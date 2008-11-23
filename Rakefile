@@ -11,8 +11,8 @@ require 'garlic'
 spec = Gem::Specification.new do |s|
   s.name          = "garlic"
   s.version       = Garlic::Version::String
-  s.summary       = "Lightweight set of rake tasks to help with CI."
-  s.description   = "Lightweight set of rake tasks to help with CI."
+  s.summary       = "Set of commands/rake-tasks for CI against multiple version of rails/deps."
+  s.description   = "Set of commands/rake-tasks for CI against multiple version of rails/deps."
   s.author        = "Ian White"
   s.email         = "ian.w.white@gmail.com"
   s.homepage      = "http://github.com/ianwhite/garlic/tree"
