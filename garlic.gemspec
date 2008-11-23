@@ -2,16 +2,16 @@
 
 Gem::Specification.new do |s|
   s.name = %q{garlic}
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ian White"]
-  s.date = %q{2008-11-02}
+  s.date = %q{2008-11-23}
   s.default_executable = %q{garlic}
   s.description = %q{Lightweight set of rake tasks to help with CI.}
   s.email = %q{ian.w.white@gmail.com}
   s.executables = ["garlic"]
-  s.files = ["lib/garlic/configurator.rb", "lib/garlic/generator.rb", "lib/garlic/repo.rb", "lib/garlic/runner.rb", "lib/garlic/shell.rb", "lib/garlic/target.rb", "lib/garlic/tasks.rb", "lib/garlic.rb", "templates/default.rb", "templates/rspec.rb", "templates/shoulda.rb", "MIT-LICENSE", "README.textile", "TODO", "CHANGELOG", "spec/garlic/repo_spec.rb", "bin/garlic"]
+  s.files = ["lib/garlic/configurator.rb", "lib/garlic/generator.rb", "lib/garlic/repo.rb", "lib/garlic/session.rb", "lib/garlic/shell.rb", "lib/garlic/target.rb", "lib/garlic/tasks.rb", "lib/garlic.rb", "lib/tabtab_definition.rb", "templates/default.rb", "templates/rspec.rb", "templates/shoulda.rb", "MIT-LICENSE", "README.textile", "TODO", "CHANGELOG", "spec/garlic/repo_spec.rb", "bin/garlic"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/ianwhite/garlic/tree}
   s.rdoc_options = ["--title", "Garlic", "--line-numbers"]
