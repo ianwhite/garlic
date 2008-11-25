@@ -15,6 +15,11 @@ Garlic works by cloning git repos for all your dependencies (so they all must be
 git repos), and then using git to checkout various tags and branches to build
 your app against.
 
+h2. It's still new, and not shiny yet
+
+Please feel free to make it shinier.  I'm successfully using it on most of my plugins, and I test
+with garlic and cucumber.
+
 h2. Get up and running quickly
 
 You have a plugin and you want it tested against different versions of rails?
@@ -81,113 +86,9 @@ h2. Running Shell commands across multiple targets
 
 Check dis out
 
-  garlic shell  # "Example output":http://gist.github.com/21496
+  garlic shell  # "Example output":http://gist.github.com/28795
   
----
-
-The following still needs to be updated for the new gem/cmd-line version
-
-h2. Example workflow
-
-Let's say I'm patching resources_controller.
-
-First I grab it, and set up garlic
-  
-  git clone git://github.com/ianwhite/resources_controller.git
-  cd resources_controller
-  rake get_garlic
-  cp garlic_example.rb garlic.rb
-  # I could now edit garlic.rb to point the repos at my local copies, for speed
-  
-Now, I download and run the CI suite
-  
-  rake garlic:all
-
-Now, I make some changes
-
-  git checkout -b my_change
-  # ... commit some changes into 'my_change'
-  rake garlic
-  # ... everything is fine, so I can merge these into master, or send a pull request
-
-h3. How do I run the specs on uncommitted code?
-
-The best way is to make the changes in one of the 'work' targets.  For example:
-
-  # after running rake garlic:all
-  cd garlic/work/edge/vendor/plugins/resources_controller
-  # ... make changes without committing
-  rake spec
-  # ... it passes, so commit
-  git commit -m "My great change"
-  
-Now you can push these changes back upstream to your local 'master' repo
-
-  git push origin my_changes # or you could push to master branch or whatever
-  
-Then cd back up there, and run rake garlic to verify your changes against the other
-targets.  If these all pass, you can push, or send a pull request
-
-h2.How to add garlic to your repo (example: rails plugin)
-
-h4. 1. require the garlic tasks into your own Rakefile
-
-  # rescue this just in case the plugin user doesn't have garlic
-  begin
-    require 'garlic'
-  rescue LoadError
-  end
-
-h4. 2. add a garlic.rb
-
-An example garlic.rb:
-
-  garlic do
-    # repos
-    repo 'rails', :url => 'git://github.com/rails/rails'
-    repo 'rspec', :url => 'git://github.com/dchelimsky/rspec'
-    repo 'rspec-rails', :url => 'git://github.com/dchelimsky/rspec-rails'
-    repo 'resources_controller', :path => '.'
-
-    # targets
-    target 'edge'
-    target '2.0-stable', :branch => 'origin/2-0-stable'
-    target '2.0.2', :tag => 'v2.0.2'
-
-    all_targets do
-      prepare do
-        plugin 'resources_controller', :clone => true
-        plugin 'rspec'
-        plugin 'rspec-rails' do
-          sh "script/generate rspec -f"
-        end
-      end
-
-      run do
-        cd "vendor/plugins/resources_controller"
-          sh "rake spec:rcov:verify"
-        end
-      end
-    end
-  end
-  
-h4. 3. ignore the garlic artefacts
-
-Example .gitignore
-
-  .garlic_work
-  
-h4. 4. Run it
-
-  rake garlic:all
-  
-And to run it again, once you've made changes
-
-  rake garlic
-  
-To make sure you're running against the latest repos:
-
-  rake garlic:update_repos
+You can pipe any thing into garlic shell and it will execute across all of your garlic targets
   
 h2. Lend a hand
 
@@ -202,5 +103,6 @@ h2. Lent a hand
 Thanks very much to:
 
 * Pat Allan
+* Dr Nic Williams
 
 

@@ -1,5 +1,0 @@
-* 0.1.2
-  * making use of garlic as a gem
-  * changed paths, repos are now stored in ~/.garlic/repos (and this shared across multiple garlic sessions), work is in .garlic_work
-
-* 0.1.1 freelancing-god added gem goodness

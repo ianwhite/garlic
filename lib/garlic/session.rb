@@ -2,13 +2,12 @@ module Garlic
   # this class runs the top level garlic commands
   class Session
     attr_reader :actor, :run_targets
-    attr_accessor :repos, :targets, :all_targets, :repo_path, :work_path, :verbose
+    attr_accessor :repos, :targets, :repo_path, :work_path, :verbose
 
     def initialize(actor = nil, &block)
       @actor = actor
       self.repos = []
       self.targets = []
-      self.all_targets = {}
       self.work_path = ".garlic"
       self.repo_path = "~/.garlic/repos"
       configure(&block) if block_given?

@@ -21,7 +21,7 @@ spec = Gem::Specification.new do |s|
   s.test_files    = FileList["spec/**/*_spec.rb"]
   s.files         = FileList[
     "lib/**/*.rb", "templates/*.rb",
-    "MIT-LICENSE", "README.textile", "TODO", "CHANGELOG"
+    "License.txt", "README.textile", "Todo.txt", "History.txt"
   ]
   s.executables   = ["garlic"]
 end

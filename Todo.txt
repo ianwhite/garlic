@@ -1,0 +1,4 @@
+* add 'gem' dependency - should it freeze the gem?  or use ginger?
+* specs!
+* cucumber features!
+* rewrite using grit? (research: is grit the defacto standard for ruby controlling git?)

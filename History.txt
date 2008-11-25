@@ -1,0 +1,28 @@
+== 0.1.5 2008-11-25
+
+* 4 minor enhancements
+  * Removed 'all_targets' - just use ruby to DRY up garlic.rb
+  * Changed templates wrt above
+  * Better tabtab completions
+  * Updated TODO
+
+== 0.1.4 2008-11-20
+
+* 1 minor enhancement
+  * Added tabtab definitions that are in the right place
+
+== 0.1.3 2008-11-20
+
+* 1 minor enhancement
+  * Added tabtab definitions
+
+== 0.1.2
+
+* 2 major enhancements
+  * garlic CLI
+  * repos are now stored in ~/.garlic/repos (and this shared across multiple garlic sessions), work is in ./.garlic
+
+== 0.1.1
+
+* 1 major enhancement:
+  * freelancing-god added gem goodness

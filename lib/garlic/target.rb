@@ -18,12 +18,10 @@ module Garlic
     def prepare
       puts "\nPreparing target #{name} (#{tree_ish})"
       install_rails
-      runner.run(&garlic.all_targets[:prepare]) if garlic.all_targets[:prepare]
       runner.run(&@prepare) if @prepare
     end
     
-    def run(command = nil)
-      runner.run(&garlic.all_targets[:run]) if garlic.all_targets[:run]
+    def run
       runner.run(&@run) if @run
     end
     
