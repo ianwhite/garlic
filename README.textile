@@ -18,7 +18,7 @@ your app against.
 h2. It's still new, and not shiny yet
 
 Please feel free to make it shinier.  I'm successfully using it on most of my plugins, and I test
-with garlic and cucumber.
+with rspec and cucumber.
 
 h2. Get up and running quickly
 
@@ -89,7 +89,12 @@ Check dis out
   garlic shell  # "Example output":http://gist.github.com/28795
   
 You can pipe any thing into garlic shell and it will execute across all of your garlic targets
-  
+
+h2. Rake tasks
+
+If you prefer to use garlic via rake tasks, then just require 'garlic/tasks' and you'll get a bunch of em.
+Once required, do rake -T to see descriptions.
+
 h2. Lend a hand
 
 This is an early release, so there is plenty of scope for changes and improvement
@@ -103,6 +108,6 @@ h2. Lent a hand
 Thanks very much to:
 
 * Pat Allan
-* Dr Nic Williams
+* Dr Nic Williams (API suggestions)
 
 
