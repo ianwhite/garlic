@@ -6,6 +6,6 @@ TabTab::Definition.register('garlic', :import => '--help') do |g|
   end
   
   g.command :generate do 
-    `ls ~/.garlic/templates`.split
+    `ls ~/.garlic/templates`.split.map{|t| t.sub('.rb','')}
   end
 end

@@ -11,7 +11,7 @@ garlic do
   ['origin/master', 'origin/2-2-stable', 'origin/2-1-stable', 'origin/2-0-stable'].each do |rails|
     
     # declare how to prepare, and run each CI target
-    target "Rails: #{rails}", :tree_ish => rails do
+    target "Rails: \#{rails}", :tree_ish => rails do
       prepare do
         plugin "#{plugin}", :clone => true # so we can work in targets
       end

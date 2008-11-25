@@ -16,7 +16,7 @@ module Garlic
     
     def target(name, options = {}, &block)
       options[:name] = name
-      options[:path] = "#{garlic.work_path}/#{name}"
+      options[:path] = "#{garlic.work_path}/#{name_to_path(name)}"
       BlockParser.new(options, [:prepare, :run], &block) if block_given?
       garlic.targets << Target.new(garlic, options)
     end
@@ -26,6 +26,10 @@ module Garlic
     end
     
   protected
+    def name_to_path(name)
+      name.gsub(/[^\w\d_.-]/,'_').downcase
+    end
+    
     def method_missing(attribute, value)
       if garlic.respond_to?("#{attribute}=")
         garlic.send("#{attribute}=", value)

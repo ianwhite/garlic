@@ -18,9 +18,9 @@ module Garlic
     
   protected
     def copy_templates
-      mkdir_p TEMPLATES_PATH
+      mkdir_p TEMPLATES_PATH, :verbose => false
       Dir[File.join(File.dirname(__FILE__), '../../templates/*.rb')].each do |file|
-        cp file, File.join(TEMPLATES_PATH, File.basename(file))
+        cp file, File.join(TEMPLATES_PATH, File.basename(file)), :verbose => false
       end
     end
   end

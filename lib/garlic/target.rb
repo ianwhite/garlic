@@ -6,7 +6,7 @@ module Garlic
 
     def initialize(garlic, options = {})
       @garlic = garlic
-      @tree_ish = Repo.tree_ish(options) || 'master'
+      @tree_ish = Repo.tree_ish(options) || 'origin/master'
       @rails_repo_name = options[:rails] || 'rails'
       @path = options[:path] or raise ArgumentError, "Target requires a :path"
       @path = File.expand_path(@path)
