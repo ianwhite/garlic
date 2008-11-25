@@ -1,4 +1,4 @@
-* add 'gem' dependency - should it freeze the gem?  or use ginger?
+* add 'gem' command - should it freeze the gem in to vendor/gems?
+* BETTER OUTPUT - less uninteresting cruft in the output please
 * specs!
 * cucumber features!
-* rewrite using grit? (research: is grit the defacto standard for ruby controlling git?)

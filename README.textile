@@ -1,7 +1,7 @@
 h1. garlic: lightweight continuous integration for rails using git
 
 This is not a CI server, use cruisecontrol.rb for that.  This is a simple set
-of rake tasks that let you specify a bunch of rails builds to run against, and
+of commands (or rake tasks) that let you specify a bunch of rails builds to run against, and
 dependencies to install.
 
 This is aimed at testing plugins (or apps) against multiple versions of rails,
@@ -15,10 +15,14 @@ Garlic works by cloning git repos for all your dependencies (so they all must be
 git repos), and then using git to checkout various tags and branches to build
 your app against.
 
+"Here's an example of running a plugin against 3 different rails verisons and 3 different rspec versions":http://gist.github.com/28786
+
 h2. It's still new, and not shiny yet
 
 Please feel free to make it shinier.  I'm successfully using it on most of my plugins, and I test
 with rspec and cucumber.
+
+Check out the "TODO LIST":http://github.com/ianwhite/garlic/tree/master/Todo.txt
 
 h2. Get up and running quickly
 
