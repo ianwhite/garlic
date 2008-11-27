@@ -61,6 +61,7 @@ module Garlic
     define_command :all, "Install and update all repos, prepare and run TARGETs" do
       install_repos
       update_repos
+      clean
       prepare
       run
     end
@@ -94,11 +95,7 @@ module Garlic
     end
     
     define_command :prepare, "Prepare each garlic TARGET" do
-      begin
-        determine_targets.each {|target| target.prepare }
-      ensure
-        repo('rails').checkout('master') # we get rails back to master if something goes wrong
-      end
+      determine_targets.each {|target| target.prepare }
     end
 
     define_command :shell, "Run shell commands from stdin across specified targets" do |*path|
@@ -137,7 +134,7 @@ protected
     end
 
     def determine_targets
-      run_targets ? targets.select{|t| run_targets.include?(t.name)} : targets
+      run_targets ? targets.select{|t| t.name =~ /(?:#{run_targets.join("|")})/i} : targets
     end
   end
 end

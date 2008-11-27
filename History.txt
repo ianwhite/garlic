@@ -1,8 +1,12 @@
-== Edge
+== 0.1.6 2008-11-27
 
-* minor enhancements
+* 3 minor enhancements
   * Updated Readme/TODO
   * Some crufty output is now suppressed/removed
+  * garlic all command cleans the work path
+
+* 1 bugfix
+  * --targets, -t option now actually works
 
 == 0.1.5 2008-11-25
 

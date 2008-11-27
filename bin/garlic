@@ -23,8 +23,9 @@ OPTIONS:
   --help             -h  You're reading it
   --verbose          -v  Show work
   --config CONFIG    -c  Specify a different location of garlic config
-  --targets TARGETS  -t  Specify subset of targets, e.g. edge,2.1.0 (default all)
-  --backtrace            Show ruby bakctrace on error
+  --backtrace            Show ruby backtrace on error
+  --targets TARGETS  -t  Specify subset of targets comma separated or
+                         regexp part e.g. -t 2-1,2-2
 
 You can generate a sample garlic.rb with
   garlic generate [TEMPLATE [PLUGIN_NAME]] (Available templates: #{available_templates.join(', ')})
@@ -59,10 +60,9 @@ begin
     verbose(@verbose)
     
     # configure the garlic runner
-    garlic @config_file do
-      verbose @verbose
-      run_targets @run_targets
-    end
+    garlic(@config_file) # load up the garlic instance
+    garlic.verbose = @verbose
+    garlic.run_targets = @run_targets
   
     # run the command
     ARGV << 'default' if ARGV.empty?
