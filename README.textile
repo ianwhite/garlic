@@ -49,12 +49,12 @@ Install the garlic gem
 
   sudo gem install ianwhite-garlic --source=http://gems.github.com
 
-(if it's not installing as a gem from github)
+(if you want the very latest version)
 
   git clone git://github.com/ianwhite/garlic
   cd garlic
   rake package
-  sudo gem install pkg/*.gem
+  sudo gem install pkg/garlic-*.gem
 
 h2. Example
 
