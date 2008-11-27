@@ -58,26 +58,24 @@ module Garlic
         puts "Rails app for #{name} exists"
       else
         puts "Creating rails app for #{name}..."
-        sh "ruby #{rails_repo.path}/railties/bin/rails #{path}", :verbose => false
+        `ruby #{rails_repo.path}/railties/bin/rails #{path}`
       end
-      install_dependency(rails_repo, 'vendor/rails') { sh "rake rails:update" }
+      install_dependency(rails_repo, 'vendor/rails') { `rake rails:update` }
     end
 
     def install_dependency(repo, install_path = ".", options = {}, &block)
       repo = garlic.repo(repo) unless repo.is_a?(Repo)
       tree_ish = Repo.tree_ish(options)
       
-      puts tree_ish
-      
       if options[:clone]
         if Repo.path?(install_path)
           puts "#{install_path} exists, and is a repo"
-          cd(install_path) { sh "git fetch origin" }
+          cd(install_path) { `git fetch origin` }
         else
           puts "cloning #{repo.name} to #{install_path}"
           repo.clone_to(File.join(path, install_path))
         end
-        cd(install_path) { sh "git checkout #{tree_ish || repo.head_sha}" }
+        cd(install_path) { `git checkout #{tree_ish || repo.head_sha}` }
       
       else
         if read_sha(install_path) == repo.head_sha

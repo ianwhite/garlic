@@ -1,4 +1,4 @@
 * add 'gem' command - should it freeze the gem in to vendor/gems?
-* BETTER OUTPUT - less uninteresting cruft in the output please
+* BETTER OUTPUT - even less uninteresting cruft in the output please
 * specs!
 * cucumber features!
