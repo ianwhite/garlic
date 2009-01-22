@@ -49,7 +49,10 @@ module Garlic
         if url
           begin
             checkout 'master'
-            cd(path) { sh "git pull origin master", :verbose => false }
+            cd(path) do
+              sh "git fetch origin", :verbose => false
+              sh "git pull", :verbose => false
+            end
           rescue Exception => e
             puts "\n\nIt seems there was a problem.\nTry running rake garlic:reset_repos\n\n"
             raise e
