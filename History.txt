@@ -1,6 +1,7 @@
-== Current
+== 0.1.7
 
-* 1 minor enhancement
+* 2 minor enhancement
+  * Fix problem whereby garlic update_repos wasn't updating repos correctly
   * utilise Garlic::Generator in tabtab definition
 
 == 0.1.6 2008-11-27

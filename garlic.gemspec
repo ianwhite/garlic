@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{garlic}
-  s.version = "0.1.6"
+  s.version = "0.1.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ian White"]
-  s.date = %q{2008-11-27}
+  s.date = %q{2009-01-22}
   s.default_executable = %q{garlic}
   s.description = %q{Set of commands/rake-tasks for CI against multiple version of rails/deps.}
   s.email = %q{ian.w.white@gmail.com}
