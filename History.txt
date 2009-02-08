@@ -1,3 +1,8 @@
+== 0.1.8
+
+* 1 bugfix
+  * fix problem where dependencies weren't checking out repo tags or branches properly
+
 == 0.1.7
 
 * 2 minor enhancement
