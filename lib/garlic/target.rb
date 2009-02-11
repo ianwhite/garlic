@@ -81,9 +81,9 @@ module Garlic
         old_tree_ish = repo.head_sha
         repo.checkout(tree_ish) if tree_ish       
         if read_sha(install_path) == repo.head_sha
-          puts "#{install_path} is up to date at #{tree_ish || 'default'}"
+          puts "#{install_path} is up to date at #{tree_ish || repo.head_sha[0..6]}"
         else
-          puts "#{install_path} needs update to #{tree_ish || 'default'}, exporting archive from #{repo.name}..."
+          puts "#{install_path} needs update to #{tree_ish || repo.head_sha[0..6]}, exporting archive from #{repo.name}..."
           repo.export_to(File.join(path, install_path))
           cd(path) { garlic.instance_eval(&block) } if block_given?
           write_sha(install_path, repo.head_sha)
