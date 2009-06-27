@@ -31,38 +31,49 @@ You have a plugin and you want it tested against different versions of rails?
 * install garlic as a gem (see below)
 * cd into your (say, rspec tested) plugin directory
 
+<pre>
     garlic generate rspec > garlic.rb
     garlic install_repos
     garlic
+</pre>
 
 * See what happens, edit garlic.rb to change rails versions and other stuff.
 
+<pre>
     garlic --help # will probably help
-
+</pre>
 
 h2. Installing
 
 Install the garlic gem
 
+<pre>
     sudo gem install ianwhite-garlic --source=http://gems.github.com
+</pre>
 
 (if you want the very latest version)
 
+<pre>
     git clone git://github.com/ianwhite/garlic
     cd garlic
     rake package
     sudo gem install pkg/garlic-<code>*</code>.gem
+</pre>
 
 h2. Example
 
 To see garlic in action, download response_for, a rails plugin that uses
 garlic for CI.
 
+<pre>
     git clone git://github.com/ianwhite/response_for 
+</pre>
 
 run garlic
  
+<pre>
     garlic all
+</pre>
 
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.
@@ -71,7 +82,9 @@ h3. Once you've made some changes
 
 You can prepare and run all the targets again (without fetching remote repos) by doing
 
+<pre>
     garlic
+</pre>
  
 This will prepare all the targets, using the current HEAD of the repos, and run the
 CI task again.
@@ -81,13 +94,17 @@ h3. Specifying particular targets
 If you just want to run against a particular target or targets, you can use the TARGET or TARGETS
 env var.
 
+<pre>
     garlic -t edge
+</pre>
 
 h2. Running Shell commands across multiple targets
 
 Check dis out
 
+<pre>
     garlic shell  # "Example output":http://gist.github.com/28795
+</pre>
   
 You can pipe any thing into garlic shell and it will execute across all of your garlic targets
 
@@ -100,18 +117,23 @@ h2. garlic workflow shell commands
 
 If you add the following line to your .profile
 
+<pre>
     source `gem environment gemdir`/gems/ianwhite-garlic-<code>*</code>/sh/garlic.sh
+</pre>
   
 Then you'll get these 4 new shell commands:
 
+<pre>
     gcd [target]    cds into the specified target working repo
     gcdp [target]   cds into the specified target plugin in the working repo
     gup             cds back up to the garlic'd repo from within a working path
     gpush [branch]  from within a working repo, pushes changes back to the local garlic target, and resets
                     local changes in that target to HEAD.
+</pre>
                   
 This means you might have a workflow as follows (example is for a plugin):
 
+<pre>
     # run garlic, see probs in '2-2-stable'
     
     gcdp 2-2  # => takes you into the working repo in the '2-2-stable' target
@@ -121,7 +143,8 @@ This means you might have a workflow as follows (example is for a plugin):
     gpush     # => pushes the changes back to the enclosing garlic'd repo
     gup       # => go back up there
     garlic    # => rerun garlic to see how the changes affect the other targets
-  
+</pre>
+
 h2. Lend a hand
 
 This is an early release, so there is plenty of scope for changes and improvement
