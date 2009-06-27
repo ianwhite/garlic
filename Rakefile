@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   s.rdoc_options << "--title" << "Garlic" << "--line-numbers"
   s.test_files    = FileList["spec/**/*_spec.rb"]
   s.files         = FileList[
-    "lib/**/*.rb", "templates/*.rb",
+    "lib/**/*.rb", "templates/*.rb", "bin/*", "sh/*",
     "License.txt", "README.textile", "Todo.txt", "History.txt"
   ]
   s.executables   = ["garlic"]

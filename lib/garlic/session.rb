@@ -104,6 +104,11 @@ module Garlic
       shell.run
     end
     
+    define_command :path, "return the work dir for the specified target" do |*path_target|
+      self.run_targets = path_target.first if path_target.any?
+      puts determine_targets.first.path
+    end
+    
     define_command :run, "Run each garlic TARGET" do
       these_targets = determine_targets
       target_names, failed_names = these_targets.map{|t| t.name}, []

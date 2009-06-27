@@ -1,3 +1,11 @@
+== 0.1.9
+
+* 1 major enhancement
+  * added garlic shell commands (sh/garlic.sh) for easing the galric workflow
+    to use them, add this to your ~/.profile
+    
+      source `gem environment gemdir`/gems/ianwhite-garlic*/sh/garlic.sh
+
 == 0.1.8
 
 * 1 bugfix

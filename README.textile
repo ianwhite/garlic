@@ -99,6 +99,32 @@ h2. Rake tasks
 If you prefer to use garlic via rake tasks, then just require 'garlic/tasks' and you'll get a bunch of em.
 Once required, do rake -T to see descriptions.
 
+h2. garlic workflow shell commands
+
+If you add the following line to your .profile
+
+  source `gem environment gemdir`/gems/ianwhite-garlic*/sh/garlic.sh
+  
+Then you'll get these 4 new shell commands:
+
+  gcd [target]    cds into the specified target working repo
+  gcdp [target]   cds into the specified target plugin in the working repo
+  gup             cds back up to the garlic'd repo from within a working path
+  gpush [branch]  from within a working repo, pushes changes back to the local garlic target, and resets
+                  local changes in that target to HEAD.
+                  
+This means you might have a workflow as follows (example is for a plugin):
+
+  # run garlic, see probs in '2-2-stable'
+  
+  gcdp 2-2  # => takes you into the working repo in the '2-2-stable' target
+  
+  # fix the changes, make some commits
+  
+  gpush     # => pushes the changes back to the enclosing garlic'd repo
+  gup       # => go back up there
+  garlic    # => rerun garlic to see how the changes affect the other targets
+  
 h2. Lend a hand
 
 This is an early release, so there is plenty of scope for changes and improvement

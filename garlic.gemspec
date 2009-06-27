@@ -6,12 +6,12 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ian White"]
-  s.date = %q{2009-02-08}
+  s.date = %q{2009-06-27}
   s.default_executable = %q{garlic}
   s.description = %q{Set of commands/rake-tasks for CI against multiple version of rails/deps.}
   s.email = %q{ian.w.white@gmail.com}
   s.executables = ["garlic"]
-  s.files = ["lib/garlic/configurator.rb", "lib/garlic/generator.rb", "lib/garlic/repo.rb", "lib/garlic/session.rb", "lib/garlic/shell.rb", "lib/garlic/target.rb", "lib/garlic/tasks.rb", "lib/garlic.rb", "lib/tabtab_definitions/garlic.rb", "templates/default.rb", "templates/rspec.rb", "templates/shoulda.rb", "License.txt", "README.textile", "Todo.txt", "History.txt", "spec/garlic/repo_spec.rb", "bin/garlic"]
+  s.files = ["lib/garlic/configurator.rb", "lib/garlic/generator.rb", "lib/garlic/repo.rb", "lib/garlic/session.rb", "lib/garlic/shell.rb", "lib/garlic/target.rb", "lib/garlic/tasks.rb", "lib/garlic.rb", "lib/tabtab_definitions/garlic.rb", "templates/default.rb", "templates/rspec.rb", "templates/shoulda.rb", "bin/garlic", "sh/garlic.sh", "License.txt", "README.textile", "Todo.txt", "History.txt", "spec/garlic/repo_spec.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/ianwhite/garlic/tree}
   s.rdoc_options = ["--title", "Garlic", "--line-numbers"]
