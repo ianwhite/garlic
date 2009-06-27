@@ -150,7 +150,7 @@ h2. Lend a hand
 This is an early release, so there is plenty of scope for changes and improvement
 If you want to lend a hand, get in touch.
 
-(c) Ian White 2008 - ian.w.white@gmail.com
+(c) Ian White 2008-2009 - ian.w.white@gmail.com
 MIT Licence
 
 h2. Lent a hand
