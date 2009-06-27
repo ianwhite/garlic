@@ -31,41 +31,38 @@ You have a plugin and you want it tested against different versions of rails?
 * install garlic as a gem (see below)
 * cd into your (say, rspec tested) plugin directory
 
-<pre>
-  garlic generate rspec > garlic.rb
-  garlic install_repos
-  garlic
-</pre>
+    garlic generate rspec > garlic.rb
+    garlic install_repos
+    garlic
 
 * See what happens, edit garlic.rb to change rails versions and other stuff.
 
-<pre>
-  garlic --help # will probably help
-</pre>
+    garlic --help # will probably help
+
 
 h2. Installing
 
 Install the garlic gem
 
-  sudo gem install ianwhite-garlic --source=http://gems.github.com
+    sudo gem install ianwhite-garlic --source=http://gems.github.com
 
 (if you want the very latest version)
 
-  git clone git://github.com/ianwhite/garlic
-  cd garlic
-  rake package
-  sudo gem install pkg/garlic-*.gem
+    git clone git://github.com/ianwhite/garlic
+    cd garlic
+    rake package
+    sudo gem install pkg/garlic-*.gem
 
 h2. Example
 
 To see garlic in action, download response_for, a rails plugin that uses
 garlic for CI.
 
-  git clone git://github.com/ianwhite/response_for 
+    git clone git://github.com/ianwhite/response_for 
 
 run garlic
  
-  garlic all
+    garlic all
 
 This will clone all the required git repos (done only once), set up the target
 railses (done once), then run the targets.
@@ -74,7 +71,7 @@ h3. Once you've made some changes
 
 You can prepare and run all the targets again (without fetching remote repos) by doing
 
- garlic
+    garlic
  
 This will prepare all the targets, using the current HEAD of the repos, and run the
 CI task again.
@@ -84,13 +81,13 @@ h3. Specifying particular targets
 If you just want to run against a particular target or targets, you can use the TARGET or TARGETS
 env var.
 
-  garlic -t edge
+    garlic -t edge
 
 h2. Running Shell commands across multiple targets
 
 Check dis out
 
-  garlic shell  # "Example output":http://gist.github.com/28795
+    garlic shell  # "Example output":http://gist.github.com/28795
   
 You can pipe any thing into garlic shell and it will execute across all of your garlic targets
 
@@ -103,27 +100,27 @@ h2. garlic workflow shell commands
 
 If you add the following line to your .profile
 
-  source `gem environment gemdir`/gems/ianwhite-garlic*/sh/garlic.sh
+    source `gem environment gemdir`/gems/ianwhite-garlic*/sh/garlic.sh
   
 Then you'll get these 4 new shell commands:
 
-  gcd [target]    cds into the specified target working repo
-  gcdp [target]   cds into the specified target plugin in the working repo
-  gup             cds back up to the garlic'd repo from within a working path
-  gpush [branch]  from within a working repo, pushes changes back to the local garlic target, and resets
-                  local changes in that target to HEAD.
+    gcd [target]    cds into the specified target working repo
+    gcdp [target]   cds into the specified target plugin in the working repo
+    gup             cds back up to the garlic'd repo from within a working path
+    gpush [branch]  from within a working repo, pushes changes back to the local garlic target, and resets
+                    local changes in that target to HEAD.
                   
 This means you might have a workflow as follows (example is for a plugin):
 
-  # run garlic, see probs in '2-2-stable'
-  
-  gcdp 2-2  # => takes you into the working repo in the '2-2-stable' target
-  
-  # fix the changes, make some commits
-  
-  gpush     # => pushes the changes back to the enclosing garlic'd repo
-  gup       # => go back up there
-  garlic    # => rerun garlic to see how the changes affect the other targets
+    # run garlic, see probs in '2-2-stable'
+    
+    gcdp 2-2  # => takes you into the working repo in the '2-2-stable' target
+    
+    # fix the changes, make some commits
+    
+    gpush     # => pushes the changes back to the enclosing garlic'd repo
+    gup       # => go back up there
+    garlic    # => rerun garlic to see how the changes affect the other targets
   
 h2. Lend a hand
 
@@ -139,5 +136,3 @@ Thanks very much to:
 
 * Pat Allan
 * Dr Nic Williams (API suggestions)
-
-
