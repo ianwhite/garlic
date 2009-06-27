@@ -51,7 +51,7 @@ Install the garlic gem
     git clone git://github.com/ianwhite/garlic
     cd garlic
     rake package
-    sudo gem install pkg/garlic-*.gem
+    sudo gem install pkg/garlic-<code>*</code>.gem
 
 h2. Example
 
@@ -100,7 +100,7 @@ h2. garlic workflow shell commands
 
 If you add the following line to your .profile
 
-    source `gem environment gemdir`/gems/ianwhite-garlic*/sh/garlic.sh
+    source `gem environment gemdir`/gems/ianwhite-garlic-<code>*</code>/sh/garlic.sh
   
 Then you'll get these 4 new shell commands:
 
