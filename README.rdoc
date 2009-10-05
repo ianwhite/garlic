@@ -1,0 +1,143 @@
+= garlic
+
+<b>lightweight continuous integration for rails using git</b>
+
+This is not a CI server, use cruisecontrol.rb or integrity for that.  This is a simple set
+of commands (or rake tasks) that let you specify a bunch of rails builds to run against, and
+dependencies to install.
+
+This is aimed at testing plugins (or apps) against multiple versions of rails,
+and allows specifying other plugin dependencies (and their versions and any
+setup requried).
+
+If you want to run your specs (or whatever) against different versions of gems
+that you have installed, then check out {ginger}[http://github.com/freelancing-god/ginger] by {Pat Allen}[http://github.com/freelancing-god]
+
+Garlic works by cloning git repos for all your dependencies (so they all must be
+git repos), and then using git to checkout various tags and branches to build
+your app against.
+
+Here's an example of running a plugin against 3 different rails verisons and 3 different rspec versions: {gist 28786}[http://gist.github.com/28786]
+
+== It's still new, and not shiny yet
+
+Please feel free to make it shinier.  I'm successfully using it on most of my plugins, and I test
+with rspec and cucumber.
+
+Check out the {TODO LIST}[http://github.com/ianwhite/garlic/tree/master/Todo.txt]
+
+== Get up and running quickly
+
+You have a plugin and you want it tested against different versions of rails?
+
+<b>1.</b> install garlic as a gem (see below)
+
+<b>2.</b> cd into your (say, rspec tested) plugin directory
+
+  garlic generate rspec > garlic.rb
+  garlic install_repos
+  garlic
+
+<b>3.</b> See what happens, edit garlic.rb to change rails versions and other stuff.
+
+  garlic --help # will probably help
+
+== Installing
+
+Install the garlic gem
+
+  # from rubyforge or gemcutter
+  sudo gem install garlic
+  
+  # from github
+  sudo gem install ianwhite-garlic --source=http://gems.github.com
+
+(if you want the very latest version)
+
+  git clone git://github.com/ianwhite/garlic
+  cd garlic
+  rake package
+  sudo gem install pkg/garlic-<code>*</code>.gem
+
+== Example
+
+To see garlic in action, download resources_controller_, a rails plugin that uses garlic for CI.
+
+  git clone git://github.com/ianwhite/resources_controller 
+
+
+run garlic
+ 
+  garlic all
+
+This will clone all the required git repos (done only once), set up the target railses (done once), then run the targets.
+
+=== Once you've committed some changes
+
+You can prepare and run all the targets again (without fetching remote repos) by doing
+
+  garlic
+ 
+This will prepare all the targets, using the current HEAD of the repos, and run the
+CI task again.
+
+=== Specifying particular targets
+
+If you just want to run against a particular target or targets, you can use the -t option,
+or if using Rake, the TARGET or TARGETS env var.
+
+  garlic -t edge
+
+== Running Shell commands across multiple targets
+
+Check dis out
+
+  garlic shell  # {Example output}[http://gist.github.com/28795]
+  
+You can pipe any thing into garlic shell and it will execute across all of your garlic targets
+
+== Rake tasks
+
+If you prefer to use garlic via rake tasks, then just require 'garlic/tasks' and you'll get a bunch of em.
+Once required, do rake -T to see descriptions.
+
+== garlic workflow shell commands
+
+If you add the following line to your .profile
+
+  source `garlic --path`/sh/garlic.sh
+  
+Then you'll get these 4 new shell commands:
+
+  gcd [target]    cds into the specified target working repo
+  gcdp [target]   cds into the specified target plugin in the working repo
+  gup             cds back up to the garlic'd repo from within a working path
+  gpush [branch]  from within a working repo, pushes changes back to the local garlic target, and resets
+                  local changes in that target to HEAD.
+                  
+This means you might have a workflow as follows (example is for a plugin):
+
+  # run garlic, see probs in '2-2-stable'
+  
+  gcdp 2-2  # => takes you into the working repo in the '2-2-stable' target
+  
+  # fix the changes, make some commits
+  
+  gpush     # => pushes the changes back to the enclosing garlic'd repo
+  gup       # => go back up there
+  garlic    # => rerun garlic to see how the changes affect the other targets
+
+== Lend a hand
+
+This is an early release, so there is plenty of scope for changes and improvement
+If you want to lend a hand, get in touch.
+
+(c) Ian White 2008-2009 - ian.w.white@gmail.com
+MIT Licence
+
+== Lent a hand
+
+Thanks very much to:
+
+* Pat Allan
+* Dr Nic Williams (API suggestions)
