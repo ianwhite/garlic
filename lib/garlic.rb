@@ -9,11 +9,8 @@ module Garlic
   include Generator
   
   module Version
-    Major = 0
-    Minor = 1
-    Tiny  = 9
-    
-    String = [Major, Minor, Tiny].join('.')
+    String = File.read(File.dirname(File.dirname(__FILE__)) + '/VERSION').strip
+    Major, Minor, Patch = String.split('.').map{|i| i.to_i}
   end
   
   # return the current garlic session

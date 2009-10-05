@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Garlic
   # generate a garlic config file
   module Generator

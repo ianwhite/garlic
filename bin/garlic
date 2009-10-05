@@ -39,10 +39,14 @@ GetoptLong.new(
   ['--verbose', '-v', GetoptLong::NO_ARGUMENT],
   ['--targets', '-t', GetoptLong::REQUIRED_ARGUMENT],
   ['--config', '-c', GetoptLong::REQUIRED_ARGUMENT],
-  ['--backtrace', GetoptLong::NO_ARGUMENT]
+  ['--backtrace', GetoptLong::NO_ARGUMENT],
+  ['--path', GetoptLong::NO_ARGUMENT],
+  ['--version', GetoptLong::NO_ARGUMENT]
   ).each do |opt, arg|
   case opt
   when '--help' then STDOUT << HELP; exit true
+  when '--path' then puts File.dirname(File.dirname(File.expand_path(__FILE__))); exit true
+  when '--version' then puts Garlic::Version::String; exit true
   when '--verbose' then @verbose = true
   when '--config' then @config_file = arg
   when '--targets' then @run_targets = arg

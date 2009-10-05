@@ -9,10 +9,10 @@ garlic do
   repo "shoulda", :url => "git://github.com/thoughtbot/shoulda"
   
   # target railses
-  ['origin/master', 'origin/2-2-stable', 'origin/2-1-stable', 'origin/2-0-stable'].each do |rails|
-    
+  ['master', '2-3-stable', '2-2-stable', '2-1-stable', '2-0-stable'].each do |rails|
+
     # declare how to prepare, and run each CI target
-    target "Rails: \#{rails}", :tree_ish => rails do
+    target rails, :tree_ish => "origin/#{rails}" do
       prepare do
         plugin "#{plugin}", :clone => true # so we can work in targets
         plugin "shoulda"

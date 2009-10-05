@@ -8,47 +8,48 @@ $LOAD_PATH.unshift File.dirname(__FILE__) + '/lib'
 
 require 'garlic'
 
-spec = Gem::Specification.new do |s|
-  s.name          = "garlic"
-  s.version       = Garlic::Version::String
-  s.summary       = "Set of commands/rake-tasks for CI against multiple version of rails/deps."
-  s.description   = "Set of commands/rake-tasks for CI against multiple version of rails/deps."
-  s.author        = "Ian White"
-  s.email         = "ian.w.white@gmail.com"
-  s.homepage      = "http://github.com/ianwhite/garlic/tree"
-  s.has_rdoc      = true
-  s.rdoc_options << "--title" << "Garlic" << "--line-numbers"
-  s.test_files    = FileList["spec/**/*_spec.rb"]
-  s.files         = FileList[
-    "lib/**/*.rb", "templates/*.rb", "bin/*", "sh/*",
-    "License.txt", "README.textile", "Todo.txt", "History.txt"
-  ]
-  s.executables   = ["garlic"]
+begin
+  require 'jeweler'
+  
+  Jeweler::Tasks.new do |s|
+    s.name = "garlic"
+    s.version = Garlic::Version::String
+    s.summary = "Test your project across multiple versions of rails/dependencies"
+    s.description = "CI tool to test your project across multiple versions of rails/dependencies"
+    s.email = "ian.w.white@gmail.com"
+    s.homepage = "http://github.com/ianwhite/garlic"
+    s.authors = ["Ian White"]
+    s.rubyforge_project = 'garlic'
+  end
+  
+  Jeweler::GemcutterTasks.new
+
+  Jeweler::RubyforgeTasks.new do |rubyforge|
+    rubyforge.doc_task = "rdoc"
+  end
+  
+rescue LoadError
+  puts "Jeweler not available for gem tasks. Install it with: sudo gem install jeweler"
 end
 
-Rake::GemPackageTask.new(spec) do |p|
-  p.gem_spec = spec
-  p.need_tar = true
-  p.need_zip = true
-end
+begin
+  require 'hanna/rdoctask'
+rescue LoadError
+end  
 
-desc "Generate garlic.gemspec file"
-task :build do
-  File.open('garlic.gemspec', 'w') { |f|
-    f.write spec.to_ruby
-  }
+Rake::RDocTask.new(:doc) do |d|
+  d.options << '--all'
+  d.rdoc_dir = 'doc'
+  d.main     = 'README.textile'
+  d.title    = "garlic API Docs"
+  d.rdoc_files.include('README.textile', 'History.txt', 'License.txt', 'Todo.txt', 'VERSION', 'lib/**/*.rb')
 end
+task :rdoc => :doc
 
-desc "Run the specs under spec"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
-  t.spec_opts << "-c"
+Spec::Rake::SpecTask.new(:spec) do |t|
+  t.warning = true
 end
+task :default => :spec
 
-desc "Generate RCov reports"
-Spec::Rake::SpecTask.new(:rcov) do |t|
-  t.libs << 'lib'
-  t.spec_files = FileList['spec/**/*_spec.rb']
-  t.rcov = true
-  t.rcov_opts = ['--exclude', 'spec', '--exclude', 'gems']
-end
+
+

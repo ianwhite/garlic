@@ -1,10 +1,17 @@
+== 0.1.10
+
+* 2 minor enhancements
+  * updated gemspec for gemcutter and rubyforge
+  * templates now include rails 2.3
+  
+  
 == 0.1.9
 
 * 1 major enhancement
-  * added garlic shell commands (sh/garlic.sh) for easing the galric workflow
+  * added garlic shell commands (sh/garlic.sh) for easing the garlic workflow
     to use them, add this to your ~/.profile
     
-      source `gem environment gemdir`/gems/ianwhite-garlic*/sh/garlic.sh
+      source `garlic --path`/sh/garlic.sh
 
 == 0.1.8
 
