@@ -28,6 +28,11 @@ begin
     rubyforge.doc_task = "rdoc"
   end
   
+  namespace :release do
+    desc "Release current version to github, gemcutter and rubyforge"
+    task :all => ['release', 'gemcutter:release', 'rubyforge:release']
+  end
+  
 rescue LoadError
   puts "Jeweler not available for gem tasks. Install it with: sudo gem install jeweler"
 end
@@ -50,6 +55,3 @@ Spec::Rake::SpecTask.new(:spec) do |t|
   t.warning = true
 end
 task :default => :spec
-
-
-
