@@ -42,7 +42,7 @@ Rake::RDocTask.new(:doc) do |d|
   d.rdoc_dir = 'doc'
   d.main     = 'README.textile'
   d.title    = "garlic API Docs"
-  d.rdoc_files.include('README.textile', 'History.txt', 'License.txt', 'Todo.txt', 'VERSION', 'lib/**/*.rb')
+  d.rdoc_files.include('README.rdoc', 'History.txt', 'License.txt', 'Todo.txt', 'VERSION', 'lib/**/*.rb')
 end
 task :rdoc => :doc
 
