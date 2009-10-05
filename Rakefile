@@ -25,7 +25,7 @@ begin
   Jeweler::GemcutterTasks.new
 
   Jeweler::RubyforgeTasks.new do |rubyforge|
-    rubyforge.doc_task = "rdoc"
+    rubyforge.doc_task = "doc"
   end
   
   namespace :release do
