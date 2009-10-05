@@ -14,6 +14,9 @@ Gem::Specification.new do |s|
   s.description = %q{CI tool to test your project across multiple versions of rails/dependencies}
   s.email = %q{ian.w.white@gmail.com}
   s.executables = ["garlic"]
+  s.extra_rdoc_files = [
+    "README.rdoc"
+  ]
   s.files = [
     ".gitignore",
      "History.txt",
