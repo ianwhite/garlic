@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
+
 require 'getoptlong'
-require 'rubygems'
 require 'rake'
 require 'garlic'
 
@@ -16,9 +17,9 @@ USAGE:  garlic [options] [command]
 
 COMMANDS:
 #{Garlic::Session.commands_with_description.map{|method, desc| "  %-17s %s" % [method, desc]}.join("\n")}
-  
+
   The default command is "default"
-  
+
 OPTIONS:
   --help             -h  You're reading it
   --verbose          -v  Show work
@@ -29,7 +30,7 @@ OPTIONS:
 
 You can generate a sample garlic.rb with
   garlic generate [TEMPLATE [PLUGIN_NAME]] (Available templates: #{available_templates.join(', ')})
-  
+
 end_doc
 
 @verbose = false
@@ -60,19 +61,19 @@ begin
   else
     # run a garlic command
     raise "Unknown command: #{ARGV.first}" unless ARGV.empty? || Garlic::Session.commands.include?(ARGV.first)
-  
+
     verbose(@verbose)
-    
+
     # configure the garlic runner
     garlic(@config_file) # load up the garlic instance
     garlic.verbose = @verbose
     garlic.run_targets = @run_targets
-  
+
     # run the command
     ARGV << 'default' if ARGV.empty?
     garlic.send *ARGV
   end
-  
+
 rescue Exception => e
   STDERR << "\n#{USAGE}\n\nError: #{e.message}\n\n"
   raise e if @backtrace
