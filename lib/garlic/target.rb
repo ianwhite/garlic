@@ -60,7 +60,7 @@ module Garlic
         puts "Creating rails app for #{name}..."
 
         if File.exists?(rails_bin = "#{rails_repo.path}/bin/rails")
-          `ruby #{rails_bin} #{path}`
+          `ruby #{rails_bin} new #{path}`
         else
           `ruby #{rails_repo.path}/railties/bin/rails #{path}`
         end
