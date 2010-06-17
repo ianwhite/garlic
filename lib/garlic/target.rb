@@ -65,7 +65,12 @@ module Garlic
           `ruby #{rails_repo.path}/railties/bin/rails #{path}`
         end
       end
-      install_dependency(rails_repo, 'vendor/rails') { `rake rails:update` }
+
+      install_dependency(rails_repo, 'vendor/rails') do
+        # remove secret token so that rails 3 installer doesn't freeze
+        `rm -rf config/initializers/secret_token.rb`
+        `rake rails:update`
+      end
     end
 
     def install_dependency(repo, install_path = ".", options = {}, &block)
