@@ -61,6 +61,10 @@ module Garlic
 
         if File.exists?(rails_bin = "#{rails_repo.path}/bin/rails")
           `ruby #{rails_bin} new #{path}`
+
+          cd path do
+            `bundle install`
+          end
         else
           `ruby #{rails_repo.path}/railties/bin/rails #{path}`
         end
